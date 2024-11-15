@@ -1,0 +1,20 @@
+{
+    "@@locale": "de",
+    "successfullyRead": "Lesevorgang erfolgreich",
+    "readingFailed": "Lesevorgang fehlgeschlagen",
+    "readingFailedMessage": "Kein p-Chip erkannt.",
+    "done": "Fertig",
+    "buttonContinue": "Weiter",
+    "retry": "Wiederholen",
+    "connected": "Verbunden",
+    "turnOnPrompt": "Zum Einschalten Taste drücken",
+    "timeHint": "Sobald der Vorgang gestartet wurde, haben Sie 30 Sekunden Zeit zum Lesen",
+    "readyToScan": "Bereit zum Lesen",
+    "startScan": "Lesevorgang starten",
+    "primingTitle": "Lesevorgang vorbereiten...",
+    "connecting": "Verbinden...",
+    "searching": "Suchen...",
+    "scanning": "Lesen...",
+    "secondsLeft": "{seconds}s\nverbleibend",
+    "searchingHint": "Stellen Sie sicher, dass die LED \n am Reader blau blinkt."
+}

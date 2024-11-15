@@ -1,0 +1,40 @@
+name: mtrust_imp_kit
+description: Software SDK for interface with IMP Readers
+version: 0.3.2
+repository: https://github.com/merckgroup/mtrust-sec-kit
+publish_to: https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local
+environment:
+  sdk: ">=3.2.5 <4.0.0"
+  flutter: ">=1.17.0"
+dependencies:
+  collection: ^1.18.0
+  flutter:
+    sdk: flutter
+  mtrust_urp_core:
+    hosted:
+      url: https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local
+    version: ^8.0.0
+  mtrust_urp_ui:
+    hosted:
+      url: https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local
+    version: ^8.0.0
+  liquid_flutter:
+    hosted:
+      url: https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local
+    version: ^15.1.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  mtrust_urp_types:
+    hosted:
+      url: https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local
+    version: ^4.0.3
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  mockito: ^5.4.4
+flutter:
+  generate: true
+  assets:
+    - assets/

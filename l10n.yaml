@@ -1,0 +1,6 @@
+arb-dir: lib/src/ui/l10n
+template-arb-file: imp_en.arb
+output-localization-file: imp_localizations.dart
+synthetic-package: false
+nullable-getter: false
+output-class: ImpLocalizations
