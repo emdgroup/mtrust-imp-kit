@@ -1,5 +1,3 @@
-
-
 # IMP-Kit
 
 <img src="https://docs.mtrust.io/assets/images/imp_kit-9a1d7dfa9ce983c6affdc4b2c8599eef.png" alt="Description" width="200">
