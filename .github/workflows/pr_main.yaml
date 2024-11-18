@@ -26,7 +26,7 @@ jobs:
       - name: Prepare Flutter
         uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
         with:
-          directory: example
+          directory: example/example
 
       - name: Run static analysis
         run: |
@@ -37,7 +37,7 @@ jobs:
       - name: Check licenses
         uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
         with:
-          directory: example
+          directory: example/example
 
   build_advanced_example:
     name: Build Advanced Example
@@ -54,7 +54,7 @@ jobs:
       - name: Prepare Flutter
         uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
         with:
-          directory: example_advanced
+          directory: example/example_advanced
 
       - name: Run static analysis
         run: |
@@ -65,7 +65,7 @@ jobs:
       - name: Check licenses
         uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
         with:
-          directory: example_advanced
+          directory: example/example_advanced
 
   build_library:
     name: Build Library
