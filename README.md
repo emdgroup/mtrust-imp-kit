@@ -126,6 +126,18 @@ To display the IMP Sheet, utilize the `ImpSheet` widget. It requires a connectio
 
 ```
 
+## Use ImpReader to build custom workflows
+
+To build custom workflows, utilize the `ImpReader` class. It requires a connection strategy to handle the connection between the device and the reader. 
+
+```dart
+final reader = ImpReader(
+  connectionStrategy: _connectionStrategy,
+);
+```
+
+With the `ImpReader` you can access all methods required to build workflows that meet your specific requirements. Please refer to the `example_advanced` for an example on how to build custom workflows.
+
 ## Configuration Options
 - **Connection Strategies:** While BLE is the default, IMP-Kit supports various connection strategies. Ensure you include and configure the appropriate strategy package as needed.
 
