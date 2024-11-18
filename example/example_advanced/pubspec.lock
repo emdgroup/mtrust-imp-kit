@@ -254,7 +254,7 @@ packages:
     source: hosted
     version: "3.0.0"
   liquid_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: liquid_flutter
       sha256: "2a7f05e1849a435af3c04c48c574a6aa8cd5439ef54ba0b5a7a5f6de089919b0"
@@ -320,7 +320,7 @@ packages:
   mtrust_imp_kit:
     dependency: "direct main"
     description:
-      path: ".."
+      path: "../.."
       relative: true
     source: path
     version: "1.0.0-1"
