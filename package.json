@@ -6,6 +6,7 @@
   "main": "index.js",
   "directories": {
     "example": "example",
+    "example_advanced": "example_advanced",
     "lib": "lib",
     "test": "test"
   },
