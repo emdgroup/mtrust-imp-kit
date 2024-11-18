@@ -1,10 +1,14 @@
 name: Main - ↩️ pull request
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
-
+    types:
+      - opened
+      - synchronize
+      - reopened
+      
 jobs:
   validate_pr:
     permissions:
