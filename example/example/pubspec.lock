@@ -25,14 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  better_log:
-    dependency: transitive
-    description:
-      name: better_log
-      sha256: "8bbafaf5740568710081c4778656d5e554f72cb2aae793e8ebf969d5a4d7c54a"
-      url: "https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local/"
-    source: hosted
-    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -265,8 +257,8 @@ packages:
     dependency: "direct main"
     description:
       name: liquid_flutter
-      sha256: "5978f5eb60e44e098a64aa97d14e06c5a743cac448b66feb82fdc660745bcd8f"
-      url: "https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local/"
+      sha256: "2a7f05e1849a435af3c04c48c574a6aa8cd5439ef54ba0b5a7a5f6de089919b0"
+      url: "https://pub.dev"
     source: hosted
     version: "15.3.2"
   logger:
@@ -317,45 +309,53 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  mtrust_better_log:
+    dependency: transitive
+    description:
+      name: mtrust_better_log
+      sha256: b922a50326c3855ef366c46cfef36df6b58cf683f0e937c32f4064316aa70101
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   mtrust_imp_kit:
     dependency: "direct main"
     description:
-      path: ".."
+      path: "../.."
       relative: true
     source: path
-    version: "0.1.4"
+    version: "1.0.0-2"
   mtrust_urp_ble_strategy:
     dependency: "direct main"
     description:
       name: mtrust_urp_ble_strategy
-      sha256: ddd9da8eab71a261cc2195a26d8b6262c5c0960070c8cd2718b70bf450343dce
-      url: "https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local/"
+      sha256: d872e089ce05b7c10bd4a3884efa734f3e29695d3c6111b46fa7b8acc083cc44
+      url: "https://pub.dev"
     source: hosted
-    version: "8.0.0"
+    version: "8.0.1"
   mtrust_urp_core:
     dependency: transitive
     description:
       name: mtrust_urp_core
-      sha256: cc596cfe7d7355813f56517ed25dc27e8bc4e8f29e4d868dd15e3d2196d7164e
-      url: "https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local/"
+      sha256: bc8d19183262e0d52c1139b3cb8a369594687876f5365a2106efa0cad082b286
+      url: "https://pub.dev"
     source: hosted
-    version: "8.0.0"
+    version: "8.0.1"
   mtrust_urp_types:
     dependency: transitive
     description:
       name: mtrust_urp_types
-      sha256: "722c3dff485cc1546df806cfa8f278a2d56dc44ff51750ecb18af948213a185d"
-      url: "https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local/"
+      sha256: "65478d9c303a67638e9613d784bd2434240dbfcfc6c6c41c1584b9d77fd07d6b"
+      url: "https://pub.dev"
     source: hosted
-    version: "4.0.3"
+    version: "4.1.0"
   mtrust_urp_ui:
     dependency: transitive
     description:
       name: mtrust_urp_ui
-      sha256: "2a879d4bc65e513d49d8a7fe724ae4837d8a18fa60c6b383b843057d3a41bd95"
-      url: "https://merckgroup.jfrog.io/artifactory/api/pub/dice-mtrust-pub-dev-local/"
+      sha256: "7032a751b6edee69143e8feab69eedf7f942acb7ee51714e982ed9b673fcb4eb"
+      url: "https://pub.dev"
     source: hosted
-    version: "8.0.0"
+    version: "8.0.1"
   multi_split_view:
     dependency: transitive
     description:
