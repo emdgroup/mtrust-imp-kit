@@ -1,0 +1,23 @@
+{
+    "@@locale": "en",
+    "successfullyRead": "Successfully read",
+    "readingFailed": "Reading failed",
+    "primeFailed": "Failed to prepare for reading",
+    "readingFailedMessage": "Could not detect a p-Chip.",
+    "holdTriggerHint": "Hold trigger button to read the p-Chip",
+    "done": "Done",
+    "buttonContinue": "Continue",
+    "retry": "Retry",
+    "connected": "Connected",
+    "turnOnPrompt": "Press the button on the reader to turn it on",
+    "timeHint": "Once started you will have 30s to read",
+    "readyToScan": "Ready to read",
+    "startScan": "Start reading",
+    "primingTitle": "Getting ready to read...",
+    "connecting": "Connecting...",
+    "searching": "Searching...",
+    "scanning": "Reading...",
+    "distanceHint": "Distance the reader 2-5mm from the p-Chip",
+    "secondsLeft": "{seconds}s left",
+    "searchingHint": "Make sure the LED \n on the reader is flashing blue."
+}

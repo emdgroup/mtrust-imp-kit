@@ -1,0 +1,27 @@
+name: mtrust_imp_kit
+description: The M-Trust IMP-Kit allows you to integrate the IMP-Reader with your mobile applications.
+version: 1.0.0-0
+repository: https://github.com/emdgroup/mtrust-imp-kit
+environment:
+  sdk: ">=3.2.5 <4.0.0"
+  flutter: ">=1.17.0"
+dependencies:
+  collection: ^1.18.0
+  flutter:
+    sdk: flutter
+  mtrust_urp_core: ^8.0.1
+  mtrust_urp_ui: ^8.0.1
+  liquid_flutter: ^15.3.2
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  mtrust_urp_types: ^4.1.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  mockito: ^5.4.4
+flutter:
+  generate: true
+  assets:
+    - assets/
