@@ -30,7 +30,7 @@ jobs:
 
       - name: Run static analysis
         run: |
-          cd example
+          cd example/example
           flutter analyze --no-fatal-warnings
         shell: bash
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Run static analysis
         run: |
-          cd example
+          cd example/example_advanced
           flutter analyze --no-fatal-warnings
         shell: bash
 
