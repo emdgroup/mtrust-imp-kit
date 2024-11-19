@@ -18,10 +18,15 @@ class ImpWidget extends StatelessWidget {
     required this.onIdentificationDone,
     required this.onIdentificationFailed,
     required this.chipIdFormat,
+    this.storageAdapter,
     super.key,
   });
 
   final ChipIdFormat? chipIdFormat;
+
+  /// The StorageAdapter to use for persisting the last connected and paired
+  /// devices.
+  final StorageAdapter? storageAdapter;
 
   /// The strategy to use for the connection.
   final ConnectionStrategy connectionStrategy;
@@ -36,6 +41,7 @@ class ImpWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DeviceConnector(
       connectionStrategy: connectionStrategy,
+      storageAdapter: storageAdapter,
       connectedBuilder: (BuildContext context) {
         return LdSubmit<bool>(
           config: LdSubmitConfig<bool>(
