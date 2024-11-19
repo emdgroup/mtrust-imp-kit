@@ -1,8 +1,7 @@
 
 import 'dart:async';
 
-import 'package:mtrust_urp_core/mtrust_urp_core.dart';
-import 'package:mtrust_urp_types/imp.pb.dart';
+import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
 import 'package:mtrust_urp_virtual_strategy/mtrust_urp_virtual_strategy.dart';
 
 final reader1 = FoundDevice(
@@ -72,4 +71,34 @@ class CompleterStrategy {
   Completer<void> primeCompleter = Completer<void>();
   Completer<void> startMeasurementCompleter = Completer<void>();
   late UrpVirtualStrategy strategy;
+}
+
+class MockStorageAdapter extends StorageAdapter {
+  MockStorageAdapter() : super('mock_storage_adapter');
+
+  @override
+  Future<void> clearPairedReader() {
+    return Future.value();
+  }
+
+  @override
+  Future<void> clearPersistedReader() async {}
+
+  @override
+  Future<FoundDevice?> getLastConnectedReader() async {
+    return reader2;
+  }
+
+  @override
+  Future<FoundDevice?> getPairedReader() {
+    return Future.value(reader2);
+  }
+
+  @override
+  Future<void> persistLastConnectedReader(FoundDevice reader) async {}
+
+  @override
+  Future<void> persistPairedReader(FoundDevice reader) async {
+    return Future.value();
+  }
 }

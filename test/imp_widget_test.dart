@@ -19,11 +19,14 @@ void main() {
         'Idle': (tester, place) async {
           final strategy = CompleterStrategy(withReaders: true);
 
+          final storageAdapter = MockStorageAdapter();
+
           await place(
             AspectRatio(
               aspectRatio: 1,
               child: ImpWidget(
                 connectionStrategy: strategy.strategy,
+                storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
                 onIdentificationFailed: () async {},
@@ -37,11 +40,14 @@ void main() {
         'Priming': (tester, place) async {
           final strategy = CompleterStrategy(withReaders: true);
 
+          final storageAdapter = MockStorageAdapter();
+
           await place(
             AspectRatio(
               aspectRatio: 1,
               child: ImpWidget(
                 connectionStrategy: strategy.strategy,
+                storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
                 onIdentificationFailed: () async {},
@@ -60,11 +66,14 @@ void main() {
         'Waiting for measurement': (tester, place) async {
           final strategy = CompleterStrategy(withReaders: true);
 
+          final storageAdapter = MockStorageAdapter();
+
           await place(
             AspectRatio(
               aspectRatio: 1,
               child: ImpWidget(
                 connectionStrategy: strategy.strategy,
+                storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
                 onIdentificationFailed: () async {},
@@ -89,11 +98,14 @@ void main() {
         'Measuring': (tester, place) async {
           final strategy = CompleterStrategy(withReaders: true);
 
+          final storageAdapter = MockStorageAdapter();
+
           await place(
             AspectRatio(
               aspectRatio: 1,
               child: ImpWidget(
                 connectionStrategy: strategy.strategy,
+                storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
                 onIdentificationFailed: () async {},
@@ -111,7 +123,7 @@ void main() {
 
           await tester.pumpAndSettle();
 
-          await tester.tap(find.text('Start scan'));
+          await tester.tap(find.text('Start reading'));
 
           await tester.pumpAndSettle();
 
@@ -122,11 +134,14 @@ void main() {
         'Measure Fail': (tester, place) async {
           final strategy = CompleterStrategy(withReaders: true);
 
+          final storageAdapter = MockStorageAdapter();
+
           await place(
             AspectRatio(
               aspectRatio: 1,
               child: ImpWidget(
                 connectionStrategy: strategy.strategy,
+                storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
                 onIdentificationFailed: () async {},
@@ -144,7 +159,7 @@ void main() {
 
           await tester.pumpAndSettle();
 
-          await tester.tap(find.text('Start scan'));
+          await tester.tap(find.text('Start reading'));
 
           strategy.startMeasurementCompleter.completeError('');
 
@@ -155,11 +170,14 @@ void main() {
         'Measure Complete': (tester, place) async {
           final strategy = CompleterStrategy(withReaders: true);
 
+          final storageAdapter = MockStorageAdapter();
+
           await place(
             AspectRatio(
               aspectRatio: 1,
               child: ImpWidget(
                 connectionStrategy: strategy.strategy,
+                storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
                 onIdentificationFailed: () async {},
@@ -177,7 +195,7 @@ void main() {
 
           await tester.pumpAndSettle();
 
-          await tester.tap(find.text('Start scan'));
+          await tester.tap(find.text('Start reading'));
 
           strategy.startMeasurementCompleter.complete();
 
