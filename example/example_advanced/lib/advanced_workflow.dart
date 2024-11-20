@@ -12,10 +12,46 @@ class AdvancedWorkflow extends StatefulWidget {
   }
 }
 
-class _AdvancedWorkflowState extends State<AdvancedWorkflow> {
+// The WidgetsBindingObserver is used to disconnect the reader
+// if the app is moved to background
+class _AdvancedWorkflowState extends State<AdvancedWorkflow> 
+  with WidgetsBindingObserver {
 
   final UrpBleStrategy _bleStrategy = UrpBleStrategy();
   late final ImpReader _impReader = ImpReader(connectionStrategy: _bleStrategy);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Disconnect the device if the app is paused
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.paused:
+        if(_bleStrategy.status == ConnectionStatus.connected) {
+          _bleStrategy.disconnectDevice();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.hidden:
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   // Find and connect a IMP Reader
   Future<void> findAndConnect() async {
