@@ -41,7 +41,9 @@ class _AdvancedWorkflowState extends State<AdvancedWorkflow>
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.paused:
-        _bleStrategy.disconnectDevice();
+        if(_bleStrategy.status == ConnectionStatus.connected) {
+          _bleStrategy.disconnectDevice();
+        }
         break;
       case AppLifecycleState.resumed:
         break;
