@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0-0 (2024-11-20)
+
+
+### Features
+
+* example_advanced disconnect on app pause ([#6](https://github.com/emdgroup/mtrust-imp-kit/issues/6)) ([493a4b9](https://github.com/emdgroup/mtrust-imp-kit/commit/493a4b9f185904e98e45b55944f45d4b25f494e5))
+
 ## 1.0.0 (2024-11-18)
 
 ## 1.0.0-2 (2024-11-18)
