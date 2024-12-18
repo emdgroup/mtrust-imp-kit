@@ -12,3 +12,5 @@ export 'package:mtrust_imp_kit/src/imp_reader.dart';
 export 'package:mtrust_imp_kit/src/ui/scanning_instruction.dart';
 
 export 'package:mtrust_urp_types/imp.pb.dart';
+
+export 'package:mtrust_imp_kit/src/format_utils.dart';

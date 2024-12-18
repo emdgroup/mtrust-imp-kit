@@ -43,10 +43,10 @@ Add the ble connection strategy to your project by including it in your `pubspec
 dependencies:
   mtrust_imp_kit: ˆ1.0.0
   # Add the BLE connection strategy
-  urp_ble_strategy: ˆ8.0.1
+  mtrust_urp_ble_strategy: ˆ8.0.1
 ```
 
-Please follow the instructions for configuring BLE for your respective platform in the [README](https://github.com/emdgroup/mtrust-urp/blob/main/mtrust_urp_ble_strategy/README.md) of the `urp_ble_strategy`!
+Please follow the instructions for configuring BLE for your respective platform in the [README](https://github.com/emdgroup/mtrust-urp/blob/main/mtrust_urp_ble_strategy/README.md) of the `mtrust_urp_ble_strategy`!
 
 
 ## Usage

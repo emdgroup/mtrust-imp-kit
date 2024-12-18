@@ -37,12 +37,12 @@ class ImpReader extends CmdWrapper {
     ConnectionStrategy strategy, {
     String? deviceAddress,
   }) async {
-    final connceted = await strategy.findAndConnectDevice(
+    final connected = await strategy.findAndConnectDevice(
       readerTypes: {UrpDeviceType.urpImp},
       deviceAddress: deviceAddress,
     );
 
-    if (!connceted) {
+    if (!connected) {
       throw ImpReaderException(message: 'Failed to connect to reader');
     }
 
