@@ -17,6 +17,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "yaml": "^2.6.1"
+    "yaml": "^2.7.0"
   }
 }
