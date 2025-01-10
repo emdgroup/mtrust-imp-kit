@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_flutter/liquid_flutter.dart';
-import 'package:mtrust_imp_kit/src/format_utils.dart';
-import 'package:mtrust_imp_kit/src/ui/imp_widget.dart';
-import 'package:mtrust_urp_core/mtrust_urp_core.dart';
-import 'package:mtrust_urp_types/imp.pb.dart';
+import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
 
 /// Shows a sheet that guides the user through the securalic workflow.
 /// pass the [ConnectionStrategy] to the sheet.
@@ -17,11 +14,20 @@ class ImpSheet extends StatelessWidget {
     required this.onIdentificationDone,
     required this.onIdentificationFailed,
     required this.builder,
+    this.onDismiss,
+    this.disconnectOnClose = true,
+    this.turnOffOnClose = true,
     this.chipIdFormat = ChipIdFormat.mac,
     super.key,
   });
 
   final ChipIdFormat? chipIdFormat;
+
+  /// Whether the connection should be disconnected when the sheet is closed.
+  final bool disconnectOnClose;
+
+  /// Whether the reader should be turned off when the sheet is closed.
+  final bool turnOffOnClose;
 
   /// Strategy to use for the connection.
   final ConnectionStrategy strategy;
@@ -32,6 +38,9 @@ class ImpSheet extends StatelessWidget {
   /// Will be called if a verification failed.
   final void Function() onIdentificationFailed;
 
+  /// Called when the user dismisses the sheet.
+  final void Function()? onDismiss;
+
   /// The builder that opens the sheet.
   final Widget Function(BuildContext context, Function openSheet) builder;
 
@@ -39,50 +48,63 @@ class ImpSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return LdButtonSheet(
       buttonBuilder: builder,
-      sheetBuilder: (context, dismiss, isOpen) => LdSheet(
-        customDetachedSize: const Size(450, 450),
-        open: isOpen,
-        initialSize: 1,
-        disableScroll: true,
-        minInsets: LdTheme.of(context).pad(LdSize.m),
-        noHeader: true,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Stack(
-            children: [
-              ImpWidget(
-                chipIdFormat: chipIdFormat,
-                connectionStrategy: strategy,
-                onIdentificationDone: (UrpImpMeasurement measurement) async {
-                  dismiss();
-                  onIdentificationDone(measurement);
-                },
-                onIdentificationFailed: () {
-                  onIdentificationFailed();
-                  dismiss();
-                },
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: IntrinsicHeight(
-                  child: LdButton(
-                    size: LdSize.s,
-                    mode: LdButtonMode.vague,
-                    onPressed: () {
-                      strategy.disconnectDevice();
-                      dismiss();
-                    },
-                    child: const Icon(
-                      Icons.clear,
-                      size: 18,
+      sheetBuilder: (context, dismissSheet, isOpen) {
+        Future<void> dismiss() async {
+          if (turnOffOnClose && strategy.status == ConnectionStatus.connected) {
+            await ImpReader(connectionStrategy: strategy).off();
+          }
+          if (disconnectOnClose) {
+            await strategy.disconnectDevice();
+          }
+          dismissSheet();
+          onDismiss?.call();
+        }
+
+        return LdSheet(
+          customDetachedSize: const Size(450, 450),
+          open: isOpen,
+          initialSize: 1,
+          disableScroll: true,
+          minInsets: LdTheme.of(context).pad(LdSize.m),
+          noHeader: true,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Stack(
+              children: [
+                ImpWidget(
+                  chipIdFormat: chipIdFormat,
+                  connectionStrategy: strategy,
+                  onIdentificationDone: (UrpImpMeasurement measurement) async {
+                    onIdentificationDone(measurement);
+                    await dismiss();
+                  },
+                  onIdentificationFailed: () async {
+                    onIdentificationFailed();
+                    await dismiss();
+                  },
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IntrinsicHeight(
+                    child: LdButton(
+                      size: LdSize.s,
+                      mode: LdButtonMode.vague,
+                      onPressed: () {
+                        strategy.disconnectDevice();
+                        dismiss();
+                      },
+                      child: const Icon(
+                        Icons.clear,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ).padL(),
-      ),
+              ],
+            ),
+          ).padL(),
+        );
+      },
     );
   }
 }
