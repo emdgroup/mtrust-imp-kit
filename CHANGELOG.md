@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0-2 (2025-01-10)
+
+
+### Features
+
+* example_advanced disconnect on app pause ([#6](https://github.com/emdgroup/mtrust-imp-kit/issues/6)) ([493a4b9](https://github.com/emdgroup/mtrust-imp-kit/commit/493a4b9f185904e98e45b55944f45d4b25f494e5))
+
+
+### Bug Fixes
+
+* core commands getting stuck due to missing UrpImpCommandWrapper wrapping ([#9](https://github.com/emdgroup/mtrust-imp-kit/issues/9)) ([e135bae](https://github.com/emdgroup/mtrust-imp-kit/commit/e135bae75deb7db927853811f488a6cfcec66967))
+* format_utils.dart export, Readme reference ([4327a1b](https://github.com/emdgroup/mtrust-imp-kit/commit/4327a1b36cc81d618a13b9db8c8d94726c35ad8b))
+
 ## 1.1.0-1 (2024-12-18)
 
 
