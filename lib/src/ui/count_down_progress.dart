@@ -51,7 +51,7 @@ class _CountDownProgressState extends State<CountDownProgress> {
           widthFactor: 0.7,
           child: LinearProgressIndicator(
             value: _progress,
-            borderRadius: ldRadiusSm,
+            borderRadius: LdTheme.of(context).radius(LdSize.s),
             backgroundColor: LdTheme.of(context).background,
             valueColor: AlwaysStoppedAnimation(
               LdTheme.of(context).primaryColor,

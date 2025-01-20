@@ -192,12 +192,22 @@ class _ReaderWidgetState extends State<ReaderWidget> with AutomaticKeepAliveClie
       );
     } else {
       return Center(
-        child: ElevatedButton(
-          onPressed: primeReader, 
-          child: const Text(
-            'Prime reader and start Measurement',
-          ),
-        ),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: widget.reader.getName, 
+              child: const Text(
+                'Get name',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: primeReader, 
+              child: const Text(
+                'Prime reader and start Measurement',
+              ),
+            ),
+          ],
+        )
       );
     }
   }
