@@ -64,9 +64,6 @@ fluter:
           weight: 500
         - asset: packages/liquid_flutter/fonts/Lato-Bold.ttf
           weight: 800
-    - family: LiquidIcons
-      fonts:
-        - asset: packages/liquid_flutter/fonts/LiquidIcons.ttf
 ```
 
 ### Localization
@@ -108,20 +105,22 @@ To utilize IMC Kit's UI components, incorporate the following providers and port
     )
     ```
 
-## Use the IMP Sheet 
+## Use the IMP Modal 
 
-To display the IMP Sheet, utilize the `ImpSheet` widget. It requires a connection strategy, a payload, and callbacks for the verification process:
+To display the IMP Modal, utilize the `ImpModalBuilder` widget. It requires a connection strategy, a payload, and callbacks for the verification process:
 
 
 ```dart
-  ImpSheet(
+  ImpModalBuilder(
     strategy: _connectionStrategy,
     payload: // Payload,
-    onVerificationDone: () {},
+    onVerificationDone: (measurement) {},
     onVerificationFailed: () {},
-    builder: (context, openSheet) {
-      // Call openSheet to open the IMP Sheet
-    },
+    onDismiss: () {}, // Optionally
+    canDismiss: true, // Define wether the user can dismiss the modal
+    builder: (context, openModal) {
+      // Call openModal to open the IMP Sheet
+    }
   ),
 
 ```

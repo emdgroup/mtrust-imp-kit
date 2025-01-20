@@ -204,11 +204,10 @@ class _ScanningView extends StatelessWidget {
                       size: LdSize.l,
                     ),
                     ldSpacerL,
-                    LdButtonSuccess(
+                    LdButton(
                       onPressed: () => onIdentificationDone(
                         measurementController.state.result!,
                       ),
-                      context: context,
                       child: Text(
                         ImpLocalizations.of(context).done,
                       ),

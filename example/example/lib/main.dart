@@ -49,7 +49,7 @@ class MainApp extends StatelessWidget {
                   context: context,
                   title: const Text('IMP Example Application'),
                 ),
-                body: ImpSheet(
+                body: ImpModalBuilder(
                   strategy: _bleStrategy,
                   onIdentificationDone: (content) {
                     onIdentificationDone(content);
