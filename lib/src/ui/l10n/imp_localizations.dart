@@ -215,22 +215,22 @@ abstract class ImpLocalizations {
   /// **'Make sure the LED \n on the reader is flashing blue.'**
   String get searchingHint;
 
-  /// No description provided for @primingFailed.
-  /// 
+  /// No description provided for @incompatibleFirmware.
+  ///
   /// In en, this message translates to:
   /// **'Firmware incompatible. Please update!'**
   String get incompatibleFirmware;
 
   /// No description provided for @tokenFailed.
-  /// 
+  ///
   /// In en, this message translates to:
   /// **'Getting new token failed!'**
   String get tokenFailed;
 
-  /// No description provided for @readingsLeft
-  /// 
+  /// No description provided for @readingsLeft.
+  ///
   /// In en, this message translates to:
-  /// **'Readings left for this token:'
+  /// **'Readings left for current token:'**
   String get readingsLeft;
 }
 

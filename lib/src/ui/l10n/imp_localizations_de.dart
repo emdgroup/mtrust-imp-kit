@@ -61,19 +61,19 @@ class ImpLocalizationsDe extends ImpLocalizations {
   String get distanceHint => 'Distance the reader 2-5mm from the p-Chip';
 
   @override
-  String get incompatibleFirmware => 'Inkompatible Firmware. Bitte Update durchführen!';
-
-  @override
-  String get tokenFailed => 'Neuen Token abrufen fehlgeschlagen!';
-
-  @override
-  String get readingsLeft => 'Verbleibende Messungen für aktuellen Token:';
-
-  @override
   String secondsLeft(Object seconds) {
     return '${seconds}s\nverbleibend';
   }
 
   @override
   String get searchingHint => 'Stellen Sie sicher, dass die LED \n am Reader blau blinkt.';
+
+  @override
+  String get incompatibleFirmware => 'Inkompatible Firmware. Bitte Update durchführen!';
+
+  @override
+  String get tokenFailed => 'Neuen Token abrufen fehlgeschlagen!';
+
+  @override
+  String get readingsLeft => 'Verbleibende Messungen für aktuellen Token';
 }

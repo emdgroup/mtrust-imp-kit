@@ -58,7 +58,15 @@ class ImpLocalizationsEn extends ImpLocalizations {
   String get scanning => 'Reading...';
 
   @override
-  String get distanceHint => 'Distance the reader 5-7mm from the p-Chip';
+  String get distanceHint => 'Distance the reader 2-5mm from the p-Chip';
+
+  @override
+  String secondsLeft(Object seconds) {
+    return '${seconds}s left';
+  }
+
+  @override
+  String get searchingHint => 'Make sure the LED \n on the reader is flashing blue.';
 
   @override
   String get incompatibleFirmware => 'Firmware incompatible. Please update!';
@@ -68,12 +76,4 @@ class ImpLocalizationsEn extends ImpLocalizations {
 
   @override
   String get readingsLeft => 'Readings left for current token:';
-
-  @override
-  String secondsLeft(Object seconds) {
-    return '${seconds}s left';
-  }
-
-  @override
-  String get searchingHint => 'Make sure the LED \n on the reader is flashing blue.';
 }
