@@ -214,6 +214,24 @@ abstract class ImpLocalizations {
   /// In en, this message translates to:
   /// **'Make sure the LED \n on the reader is flashing blue.'**
   String get searchingHint;
+
+  /// No description provided for @primingFailed.
+  /// 
+  /// In en, this message translates to:
+  /// **'Firmware incompatible. Please update!'**
+  String get incompatibleFirmware;
+
+  /// No description provided for @tokenFailed.
+  /// 
+  /// In en, this message translates to:
+  /// **'Getting new token failed!'**
+  String get tokenFailed;
+
+  /// No description provided for @readingsLeft
+  /// 
+  /// In en, this message translates to:
+  /// **'Readings left for this token:'
+  String get readingsLeft;
 }
 
 class _ImpLocalizationsDelegate extends LocalizationsDelegate<ImpLocalizations> {

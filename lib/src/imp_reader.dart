@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:mtrust_imp_kit/src/imp_reader_exception.dart';
-import 'package:mtrust_urp_core/mtrust_urp_core.dart';
-import 'package:mtrust_urp_types/imp.pb.dart';
+import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
 
 /// [ImpReader] is a class that provides a high-level API to interact with
 /// an IMP reader.
@@ -35,6 +33,15 @@ class ImpReader extends CmdWrapper {
 
   /// Get ConnectionStatus.
   ConnectionStatus get status => connectionStrategy.status;
+
+  int _requestTokenAmount = 10;
+
+  /// Sets the amount of tokens to be requested if the device has no more
+  /// tokens available. The default 10.
+  void setTokenAmount(int amount) {
+    _requestTokenAmount = amount;
+    notifyListeners();
+  }
 
   /// Find and connect to an IM reader using the given [strategy].
   /// If [deviceAddress] is provided, it will try to connect to the reader
@@ -313,11 +320,82 @@ class ImpReader extends CmdWrapper {
   }
 
   /// Prepares (primes) a measurement
-  Future<void> prime() async {
+  Future<UrpImpPrimeResponse?> prime() async {
     final cmd = UrpImpDeviceCommand(
       command: UrpImpCommand.urpImpPrime,
     );
+    try {
+      final res = await _addCommandToQueue(deviceCommand: cmd);
+      return UrpImpPrimeResponse.fromBuffer(res.payload);
+    } catch (e) {
+      urpLogger.e(e);
+      if(e is DeviceError) {
+        if(e.errorCode == 4) {
+          final publicKey = await getPublicKey();
+          final oldToken = await requestToken();
+          final newToken = await getToken(oldToken, publicKey);
+          if(newToken == null) {
+            throw ImpReaderException(
+              message: 'Failed to get new token!',
+              type: ImpReaderExceptionType.tokenFailed,
+            );
+          }
+          await setToken(newToken);
+          return await prime();
+        } else {
+          rethrow;
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Request the device to send a new token request
+  Future<UrpSecureToken> requestToken() async {
+    final UrpImpDeviceCommand cmd = UrpImpDeviceCommand(
+      command: UrpImpCommand.urpImpRequestToken,
+      tokenRequest: UrpTokenRequest(
+        amount: _requestTokenAmount
+      ),
+    );
+    final res = await _addCommandToQueue(
+      deviceCommand: cmd,
+    );
+    
+    if(!res.hasPayload()) {
+      throw ImpReaderException(
+        message: 'Failed to request token!',
+        type: ImpReaderExceptionType.tokenFailed,
+      );
+    }
+    return UrpSecureToken.fromBuffer(res.payload);
+  }
+
+  /// Install a new token after a token request on the device
+  Future<void> setToken(UrpSecureToken token) async {
+    final UrpImpDeviceCommand cmd = UrpImpDeviceCommand(
+      command: UrpImpCommand.urpImpSetToken,
+      secureToken: token,
+    );
     await _addCommandToQueue(deviceCommand: cmd);
+  }
+
+  /// Request the currently installed token from the device
+  Future<UrpSecureToken> getCurrentToken() async {
+    final UrpImpDeviceCommand cmd = UrpImpDeviceCommand(
+      command: UrpImpCommand.urpImpGetToken,
+    );
+    final res = await _addCommandToQueue(
+      deviceCommand: cmd,
+    );
+
+    if(!res.hasPayload()) {
+      throw ImpReaderException(
+        message: 'Failed to get current token',
+        type: ImpReaderExceptionType.tokenFailed,
+      );
+    }
+    return UrpSecureToken.fromBuffer(res.payload);
   }
 
   /// Unprime a measurement
@@ -330,19 +408,29 @@ class ImpReader extends CmdWrapper {
 
   /// Measures until detection. Returns the result if successful.
   /// Triggers an error if failed.
-  Future<UrpImpMeasurement> startMeasurement() async {
+  Future<UrpImpSecureMeasurement> startMeasurement() async {
     final cmd = UrpImpDeviceCommand(
       command: UrpImpCommand.urpImpStartMeasurement,
     );
-    final result = await _addCommandToQueue(
+    final res = await _addCommandToQueue(
       deviceCommand: cmd, 
       timeout: const Duration(seconds: 30),
     );
 
-    if (!result.hasPayload()) {
-      throw Exception('Failed to measure.');
+    if (!res.hasPayload()) {
+      throw ImpReaderException(
+        message: 'Failed to measure.',
+        type: ImpReaderExceptionType.measurementFailed,
+      );
     }
-    return UrpImpMeasurement.fromBuffer(result.payload);
+    try {
+      return UrpImpSecureMeasurement.fromBuffer(res.payload);
+    } catch (e) {
+      throw ImpReaderException(
+        message: 'Incompatible device firmware version. Please update!',
+        type: ImpReaderExceptionType.incompatibleFirmware,
+      );
+    }
   }
 
   /// Stop measurement

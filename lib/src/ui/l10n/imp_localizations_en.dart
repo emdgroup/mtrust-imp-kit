@@ -58,7 +58,16 @@ class ImpLocalizationsEn extends ImpLocalizations {
   String get scanning => 'Reading...';
 
   @override
-  String get distanceHint => 'Distance the reader 2-5mm from the p-Chip';
+  String get distanceHint => 'Distance the reader 5-7mm from the p-Chip';
+
+  @override
+  String get incompatibleFirmware => 'Firmware incompatible. Please update!';
+
+  @override
+  String get tokenFailed => 'Getting new token failed!';
+
+  @override
+  String get readingsLeft => 'Readings left for current token:';
 
   @override
   String secondsLeft(Object seconds) {
