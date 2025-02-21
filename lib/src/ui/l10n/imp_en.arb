@@ -19,5 +19,8 @@
     "scanning": "Reading...",
     "distanceHint": "Distance the reader 2-5mm from the p-Chip",
     "secondsLeft": "{seconds}s left",
-    "searchingHint": "Make sure the LED \n on the reader is flashing blue."
+    "searchingHint": "Make sure the LED \n on the reader is flashing blue.",
+    "incompatibleFirmware": "Firmware incompatible. Please update!",
+    "tokenFailed": "Getting new token failed!",
+    "readingsLeft": "Readings left for current token:"
 }

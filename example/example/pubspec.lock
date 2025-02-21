@@ -125,10 +125,10 @@ packages:
     dependency: transitive
     description:
       name: fixnum
-      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
+      sha256: b6dc7065e46c974bc7c5f143080a6764ec7a4be6da1285ececdc37be96de53be
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -321,10 +321,10 @@ packages:
     dependency: "direct main"
     description:
       name: liquid_flutter
-      sha256: "27cbb567fde79bd7faf80f6f7e7c3de3944d639e400bcc94270c5a0920a81542"
+      sha256: e9cf17354642e5a4b1801f832727fdd47e1b44a61e215a5b9938a97f1d4df781
       url: "https://pub.dev"
     source: hosted
-    version: "18.2.0"
+    version: "19.0.1"
   logger:
     dependency: transitive
     description:
@@ -376,34 +376,34 @@ packages:
     dependency: "direct main"
     description:
       name: mtrust_urp_ble_strategy
-      sha256: "38623dfd962db4e0049a67c594a902bc5908bfe9fdf09847d5f85d2d3123f754"
+      sha256: "28ed48645bbd9848392cc02f01c2933066c99c3cecf4bfa685c8c94261ae506b"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0-5"
+    version: "9.0.0-7"
   mtrust_urp_core:
     dependency: transitive
     description:
       name: mtrust_urp_core
-      sha256: "72e065f7d6a02cb4a11caed69d8fb133c2ee9071194ce72fcba6dddf54f3fbae"
+      sha256: "35f55c815cee8b50c18ce3f5e784d3415d8b0306d570ce6da83ee97cdcb0ccce"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0-5"
+    version: "9.0.0-7"
   mtrust_urp_types:
     dependency: transitive
     description:
       name: mtrust_urp_types
-      sha256: "65478d9c303a67638e9613d784bd2434240dbfcfc6c6c41c1584b9d77fd07d6b"
+      sha256: fcc680b35d9511b0aca433575d03d266c992e5ab77b5420b67410bd914e1769d
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "5.0.2"
   mtrust_urp_ui:
     dependency: transitive
     description:
       name: mtrust_urp_ui
-      sha256: "80f85517cbd7f7562fbf34364566a3ef9ff89356a4a22da3b4864141e6979e4f"
+      sha256: "2cfff43d2a0955fae75f02e02a57c74ccbda5552cfb5c234462d6bcebc259e1a"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0-5"
+    version: "9.0.0-7"
   multi_split_view:
     dependency: transitive
     description:

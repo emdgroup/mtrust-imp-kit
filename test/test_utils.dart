@@ -42,9 +42,11 @@ class CompleterStrategy {
           }
 
           return UrpResponse(
-            payload: UrpImpMeasurementResult(
-              id: 123,
-              reads: 1,
+            payload: UrpImpSecureMeasurement(
+              measurement: UrpImpMeasurement(
+                id: 123,
+                reads: 1,
+              ),
             ).writeToBuffer(),
           );
         // ignore: no_default_cases

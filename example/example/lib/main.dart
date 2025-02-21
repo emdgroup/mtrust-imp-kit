@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
 
   // Will be called if a identifcation was successful. Add the logic here to
   // control what should happen after a successful identification.
-  void onIdentificationDone(UrpImpMeasurement content) {
+  void onIdentificationDone(UrpImpSecureMeasurement content) {
     // ignore: avoid_print
     print("Measurement successful: ${content.toDebugString()}");
   }
@@ -50,6 +50,8 @@ class MainApp extends StatelessWidget {
                   title: const Text('IMP Example Application'),
                 ),
                 body: ImpModalBuilder(
+                  turnOffOnClose: false,
+                  disconnectOnClose: true,
                   strategy: _bleStrategy,
                   onIdentificationDone: (content) {
                     onIdentificationDone(content);
@@ -60,10 +62,6 @@ class MainApp extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          /* const SizedBox(
-                            height: 120,
-                            child: ScanningInstruction(),
-                          ), */
                           LdButton(
                             onPressed: openSheet,
                             child: const Text('Start Identification'),

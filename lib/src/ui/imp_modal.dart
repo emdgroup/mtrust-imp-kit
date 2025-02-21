@@ -23,6 +23,7 @@ class ImpModalBuilder extends StatelessWidget {
     required this.onIdentificationFailed,
     required this.builder,
     this.chipIdFormat = ChipIdFormat.mac,
+    this.payload,
     this.onDismiss,
     this.disconnectOnClose = true,
     this.turnOffOnClose = true,
@@ -44,11 +45,13 @@ class ImpModalBuilder extends StatelessWidget {
 
   final ChipIdFormat? chipIdFormat;
 
+  final String? payload;
+
   /// Strategy to use for the connection.
   final ConnectionStrategy strategy;
 
   /// Will be called if a verification was successful.
-  final void Function(UrpImpMeasurement measurement) onIdentificationDone;
+  final void Function(UrpImpSecureMeasurement measurement) onIdentificationDone;
 
   /// Will be called if a verification failed.
   final void Function() onIdentificationFailed;
@@ -104,6 +107,7 @@ class ImpModalBuilder extends StatelessWidget {
         useSafeArea: useSafeArea,
         strategy: strategy,
         chipFormat: chipIdFormat,
+        payload: payload,
       ),
     );
   }
@@ -114,7 +118,7 @@ class ImpResultSuccess extends ImpResult {
   ///Creates a new instance of [ImpResultSuccess]
   ImpResultSuccess(this.measurement);
 
-  final UrpImpMeasurement measurement;
+  final UrpImpSecureMeasurement measurement;
 }
 
 /// Returned in case of a dismissed IMP identification.
@@ -144,6 +148,9 @@ LdModal impModal({
 
   /// The chip format
   ChipIdFormat? chipFormat,
+
+  /// The payload to send to the reader
+  String? payload,
 }) {
   return LdModal(
     disableScrolling: true,
@@ -158,36 +165,16 @@ LdModal impModal({
     size: LdSize.s,
     modalContent: (context) => AspectRatio(
       aspectRatio: 1,
-      child: Stack(
-        children: [
-          ImpWidget(
-            connectionStrategy: strategy, 
-            onIdentificationDone: (UrpImpMeasurement measurement) async {
-              Navigator.of(context).pop(ImpResultSuccess(measurement));
-            }, 
-            onIdentificationFailed: () async {
-              Navigator.of(context).pop(ImpResultFailed());
-            }, 
-            chipIdFormat: chipFormat,
-          ),
-          if (canDismiss)
-            Align(
-              alignment: Alignment.topRight,
-              child: IntrinsicHeight(
-                child: LdButton(
-                  size: LdSize.s,
-                  mode: LdButtonMode.vague,
-                  onPressed: () async {
-                    Navigator.of(context).pop(ImpResultDismissed());
-                  },
-                  child: const Icon(
-                    Icons.clear,
-                    size: 18,
-                  ),
-                ),
-              ),
-            ),
-        ],
+      child: ImpWidget(
+        connectionStrategy: strategy, 
+        onIdentificationDone: (UrpImpSecureMeasurement measurement) async {
+          Navigator.of(context).pop(ImpResultSuccess(measurement));
+        }, 
+        onIdentificationFailed: () async {
+          Navigator.of(context).pop(ImpResultFailed());
+        }, 
+        chipIdFormat: chipFormat,
+        payload: payload,
       ),
     ).padL(),
   );

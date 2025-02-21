@@ -141,8 +141,8 @@ class _ReaderWidgetState extends State<ReaderWidget> with AutomaticKeepAliveClie
   Future<int> measure() async {
     final response = await widget.reader.startMeasurement();
     // ignore: avoid_print
-    print('Measurement Result: ${response.result.first.id}');
-    return response.result.first.id;
+    print('Measurement Result: ${response.measurement.id}');
+    return response.measurement.id;
   }
 
   @override

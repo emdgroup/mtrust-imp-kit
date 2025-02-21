@@ -67,4 +67,13 @@ class ImpLocalizationsDe extends ImpLocalizations {
 
   @override
   String get searchingHint => 'Stellen Sie sicher, dass die LED \n am Reader blau blinkt.';
+
+  @override
+  String get incompatibleFirmware => 'Inkompatible Firmware. Bitte Update durchführen!';
+
+  @override
+  String get tokenFailed => 'Neuen Token abrufen fehlgeschlagen!';
+
+  @override
+  String get readingsLeft => 'Verbleibende Messungen für aktuellen Token';
 }
