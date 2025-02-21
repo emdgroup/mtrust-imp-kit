@@ -75,5 +75,5 @@ class ImpLocalizationsDe extends ImpLocalizations {
   String get tokenFailed => 'Neuen Token abrufen fehlgeschlagen!';
 
   @override
-  String get readingsLeft => 'Verbleibende Messungen für aktuellen Token';
+  String get readingsLeft => 'Verbleibende Messungen für aktuellen Token:';
 }

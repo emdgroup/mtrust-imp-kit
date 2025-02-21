@@ -1,7 +1,7 @@
 name: mtrust_imp_kit
 description: The M-Trust IMP-Kit allows you to integrate the IMP-Reader with
   your mobile applications.
-version: 2.0.0-0
+version: 2.0.0-1
 repository: https://github.com/emdgroup/mtrust-imp-kit
 environment:
   sdk: ">=3.2.5 <4.0.0"
