@@ -13,6 +13,7 @@ class ImpWidget extends StatelessWidget {
     required this.onIdentificationFailed,
     required this.chipIdFormat,
     this.storageAdapter,
+    this.payload,
     super.key,
   });
 
@@ -31,6 +32,9 @@ class ImpWidget extends StatelessWidget {
   /// Will be called if a verification failed.
   final void Function() onIdentificationFailed;
 
+  /// The payload to send to the reader.
+  final String? payload;
+
   @override
   Widget build(BuildContext context) {
     return DeviceConnector(
@@ -45,7 +49,7 @@ class ImpWidget extends StatelessWidget {
               final reader = ImpReader(
                 connectionStrategy: connectionStrategy,
               );
-              return await reader.prime();
+              return await reader.prime(payload);
             },
           ),
           builder: LdSubmitCustomBuilder<UrpImpPrimeResponse?>(

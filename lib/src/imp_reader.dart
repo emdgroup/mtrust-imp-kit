@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
+import 'package:mtrust_urp_types/sec.pb.dart';
 
 /// [ImpReader] is a class that provides a high-level API to interact with
 /// an IMP reader.
@@ -320,9 +321,10 @@ class ImpReader extends CmdWrapper {
   }
 
   /// Prepares (primes) a measurement
-  Future<UrpImpPrimeResponse?> prime() async {
+  Future<UrpImpPrimeResponse?> prime([String? payload]) async {
     final cmd = UrpImpDeviceCommand(
       command: UrpImpCommand.urpImpPrime,
+      primeParameters: UrpImpPrimeParameters(payload: payload),
     );
     try {
       final res = await _addCommandToQueue(deviceCommand: cmd);
@@ -341,7 +343,7 @@ class ImpReader extends CmdWrapper {
             );
           }
           await setToken(newToken);
-          return await prime();
+          return await prime(payload);
         } else {
           rethrow;
         }
