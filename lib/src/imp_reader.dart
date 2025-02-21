@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
-import 'package:mtrust_urp_types/sec.pb.dart';
 
 /// [ImpReader] is a class that provides a high-level API to interact with
 /// an IMP reader.
