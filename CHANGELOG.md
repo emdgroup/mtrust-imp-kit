@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.0.0-1 (2025-02-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* token handling (#12)
+* bump to liquid 18 (#11)
+
+### Features
+
+* bump to liquid 18 ([#11](https://github.com/emdgroup/mtrust-imp-kit/issues/11)) ([91df78c](https://github.com/emdgroup/mtrust-imp-kit/commit/91df78cb6798b7a2342ae216fdba63f83a104e00))
+* example_advanced disconnect on app pause ([#6](https://github.com/emdgroup/mtrust-imp-kit/issues/6)) ([493a4b9](https://github.com/emdgroup/mtrust-imp-kit/commit/493a4b9f185904e98e45b55944f45d4b25f494e5))
+* token handling ([#12](https://github.com/emdgroup/mtrust-imp-kit/issues/12)) ([a38b1e6](https://github.com/emdgroup/mtrust-imp-kit/commit/a38b1e67a422d12d1dcaec6356ed7db68054e3b1))
+
+
+### Bug Fixes
+
+* core commands getting stuck due to missing UrpImpCommandWrapper wrapping ([#9](https://github.com/emdgroup/mtrust-imp-kit/issues/9)) ([e135bae](https://github.com/emdgroup/mtrust-imp-kit/commit/e135bae75deb7db927853811f488a6cfcec66967))
+* format_utils.dart export, Readme reference ([4327a1b](https://github.com/emdgroup/mtrust-imp-kit/commit/4327a1b36cc81d618a13b9db8c8d94726c35ad8b))
+
 ## 2.0.0-0 (2025-01-20)
 
 
