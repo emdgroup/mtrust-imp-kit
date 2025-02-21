@@ -62,10 +62,6 @@ class MainApp extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          /* const SizedBox(
-                            height: 120,
-                            child: ScanningInstruction(),
-                          ), */
                           LdButton(
                             onPressed: openSheet,
                             child: const Text('Start Identification'),
