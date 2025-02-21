@@ -23,6 +23,7 @@ class ImpModalBuilder extends StatelessWidget {
     required this.onIdentificationFailed,
     required this.builder,
     this.chipIdFormat = ChipIdFormat.mac,
+    this.payload,
     this.onDismiss,
     this.disconnectOnClose = true,
     this.turnOffOnClose = true,
@@ -43,6 +44,8 @@ class ImpModalBuilder extends StatelessWidget {
   final bool canDismiss;
 
   final ChipIdFormat? chipIdFormat;
+
+  final String? payload;
 
   /// Strategy to use for the connection.
   final ConnectionStrategy strategy;
@@ -104,6 +107,7 @@ class ImpModalBuilder extends StatelessWidget {
         useSafeArea: useSafeArea,
         strategy: strategy,
         chipFormat: chipIdFormat,
+        payload: payload,
       ),
     );
   }
@@ -144,6 +148,9 @@ LdModal impModal({
 
   /// The chip format
   ChipIdFormat? chipFormat,
+
+  /// The payload to send to the reader
+  String? payload,
 }) {
   return LdModal(
     disableScrolling: true,
@@ -167,6 +174,7 @@ LdModal impModal({
           Navigator.of(context).pop(ImpResultFailed());
         }, 
         chipIdFormat: chipFormat,
+        payload: payload,
       ),
     ).padL(),
   );
