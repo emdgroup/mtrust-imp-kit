@@ -14,6 +14,7 @@ class ImpWidget extends StatelessWidget {
     required this.chipIdFormat,
     this.storageAdapter,
     this.payload,
+    this.tokenAmount,
     super.key,
   });
 
@@ -35,6 +36,9 @@ class ImpWidget extends StatelessWidget {
   /// The payload to send to the reader.
   final String? payload;
 
+  /// Amount of token to be requested on token refresh.
+  final int? tokenAmount;
+
   @override
   Widget build(BuildContext context) {
     return DeviceConnector(
@@ -49,6 +53,9 @@ class ImpWidget extends StatelessWidget {
               final reader = ImpReader(
                 connectionStrategy: connectionStrategy,
               );
+              if(tokenAmount != null) {
+                reader.setTokenAmount(tokenAmount!);
+              }
               return await reader.prime(payload);
             },
           ),
