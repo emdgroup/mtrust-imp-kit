@@ -28,7 +28,6 @@ class ImpModalBuilder extends StatelessWidget {
     this.disconnectOnClose = true,
     this.turnOffOnClose = true,
     this.canDismiss = true,
-    this.fixedDialogSize = const Size(400, 400),
     this.tokenAmount,
     super.key,
   });
@@ -60,9 +59,6 @@ class ImpModalBuilder extends StatelessWidget {
 
   /// The builder that opens the sheet.
   final Widget Function(BuildContext context, Function openSheet) builder;
-
-  /// Size of the modal.
-  final Size fixedDialogSize;
 
   /// Amount of tokens to be requested on token refresh.
   final int? tokenAmount;
@@ -116,7 +112,6 @@ class ImpModalBuilder extends StatelessWidget {
         strategy: strategy,
         chipFormat: chipIdFormat,
         payload: payload,
-        fixedDialogSize: fixedDialogSize,
         tokenAmount: tokenAmount,
       ),
     );
@@ -162,9 +157,6 @@ LdModal impModal({
   /// The payload to send to the reader
   String? payload,
 
-  /// Size of the modal
-  Size fixedDialogSize = const Size(400, 400),
-
   /// Amount of token to be requested on token refresh
   int? tokenAmount,
 }) {
@@ -175,7 +167,6 @@ LdModal impModal({
     showDismissButton: canDismiss,
     userCanDismiss: canDismiss,
     topRadius: topRadius,
-    fixedDialogSize: fixedDialogSize,
     bottomRadius: bottomRadius,
     useSafeArea: useSafeArea,
     insets: insets,
