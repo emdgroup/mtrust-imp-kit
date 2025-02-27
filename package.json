@@ -1,6 +1,6 @@
 {
   "name": "mtrust_imp_kit",
-  "version": "2.0.0-3",
+  "version": "2.0.0-4",
   "private": true,
   "description": "Explore the Flutter IMP Reader Package, a robust solution for seamless integration of IMP Readers via Bluetooth Low Energy (BLE) into your Flutter applications. This package is designed to simplify the integration process, providing developers with a versatile toolkit for managing connections and defining workflows effortlessly.",
   "main": "index.js",
