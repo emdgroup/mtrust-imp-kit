@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   mtrust_imp_kit:
     path: ../../
-  mtrust_urp_ble_strategy: ^9.0.0-8
+  mtrust_urp_ble_strategy: ^9.0.0-12
   liquid_flutter: ^19.0.0
 
 dev_dependencies:

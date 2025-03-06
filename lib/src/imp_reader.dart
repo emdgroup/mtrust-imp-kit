@@ -334,15 +334,19 @@ class ImpReader extends CmdWrapper {
         if(e.errorCode == 4) {
           final publicKey = await getPublicKey();
           final oldToken = await requestToken();
-          final newToken = await getToken(oldToken, publicKey);
-          if(newToken == null) {
-            throw ImpReaderException(
-              message: 'Failed to get new token!',
-              type: ImpReaderExceptionType.tokenFailed,
-            );
+          try {
+            final newToken = await getToken(oldToken, publicKey);
+            if(newToken == null) {
+              throw ImpReaderException(
+                message: 'Failed to get new token!',
+                type: ImpReaderExceptionType.tokenFailed,
+              );
+            }
+            await setToken(newToken);
+            return await prime(payload);
+          } catch (e) {
+            rethrow;
           }
-          await setToken(newToken);
-          return await prime(payload);
         } else {
           rethrow;
         }

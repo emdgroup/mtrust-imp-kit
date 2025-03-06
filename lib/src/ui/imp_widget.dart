@@ -63,12 +63,15 @@ class ImpWidget extends StatelessWidget {
             builder: (context, controller, stateType) {
               if (stateType == LdSubmitStateType.error) {
                 String message = controller.state.error?.message ?? 'Unknown error';
-                String? moreInfo = controller.state.error?.moreInfo;
                 if(controller.state.error?.exception.runtimeType == ImpReaderException) {
                   final ImpReaderException error = controller.state.error?.exception as ImpReaderException;
                   if(error.type == ImpReaderExceptionType.tokenFailed) {
                     message = ImpLocalizations.of(context).tokenFailed;
                   }
+                }
+                if(controller.state.error?.exception.runtimeType == ApiException) {
+                  final error = controller.state.error?.exception as ApiException;
+                  message = error.errorMessage;
                 }
                 return LdAutoSpace(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,10 +83,6 @@ class ImpWidget extends StatelessWidget {
                     LdTextP(
                       message,
                     ),
-                    if(moreInfo != null)
-                      LdTextP(
-                        moreInfo
-                      ),
                     const Expanded(
                       child: IMPReaderVisualization(
                         ledColor: Colors.red,
