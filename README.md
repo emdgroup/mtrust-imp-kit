@@ -31,7 +31,7 @@ flutter pub add mtrust_imp_kit
 ```
 
 IMP-Kit can work with different URP Connection types. The default for IMP Readers is BLE. 
-Add the ble connection strategy to your project by including it in your `pubspec.yaml` file.
+Add the ble connection strategy to your project by including it in your `pubspec.yaml` file via pub add command.
 ```
 flutter pub add mtrust_urp_ble_strategy
 ```
