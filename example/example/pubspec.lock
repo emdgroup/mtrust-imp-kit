@@ -365,21 +365,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
-  mtrust_better_log:
-    dependency: transitive
-    description:
-      name: mtrust_better_log
-      sha256: b922a50326c3855ef366c46cfef36df6b58cf683f0e937c32f4064316aa70101
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   mtrust_imp_kit:
     dependency: "direct main"
     description:
       path: "../.."
       relative: true
     source: path
-    version: "2.0.0-6"
+    version: "2.0.0"
   mtrust_urp_ble_strategy:
     dependency: "direct main"
     description:
