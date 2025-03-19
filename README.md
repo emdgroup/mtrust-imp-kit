@@ -19,7 +19,7 @@ The M-Trust IMP-Kit allows you to integrate the IMP-Reader with your mobile appl
 
 - Flutter SDK installed on your system.
 - Basic knowledge of Flutter development.
-- Access to the M-Trust IMP-Reader hardware, or use the `mtrust_virtual_strategy` for development without the hardware.
+- Access to the M-Trust IMP-Reader hardware, or use the `mtrust_urp_virtual_strategy` for development without the hardware.
 
 ## Getting started
 
@@ -29,24 +29,14 @@ Add the `mtrust_imp_kit` package to your Flutter project via the pub add command
 ```
 flutter pub add mtrust_imp_kit
 ```
-or manually add it to your `pubspec.yaml`
-```yaml
-dependencies:
-  mtrust_imp_kit: ˆ1.0.0
-```
-
 
 IMP-Kit can work with different URP Connection types. The default for IMP Readers is BLE. 
-Add the ble connection strategy to your project by including it in your `pubspec.yaml` file.
-```yaml
-
-dependencies:
-  mtrust_imp_kit: ˆ1.0.0
-  # Add the BLE connection strategy
-  urp_ble_strategy: ˆ8.0.1
+Add the ble connection strategy to your project by including it in your `pubspec.yaml` file via pub add command.
+```
+flutter pub add mtrust_urp_ble_strategy
 ```
 
-Please follow the instructions for configuring BLE for your respective platform in the [README](https://github.com/emdgroup/mtrust-urp/blob/main/mtrust_urp_ble_strategy/README.md) of the `urp_ble_strategy`!
+Please follow the instructions for configuring BLE for your respective platform in the [README](https://github.com/emdgroup/mtrust-urp/blob/main/mtrust_urp_ble_strategy/README.md) of the `mtrust_urp_ble_strategy`!
 
 
 ## Usage
@@ -64,9 +54,6 @@ fluter:
           weight: 500
         - asset: packages/liquid_flutter/fonts/Lato-Bold.ttf
           weight: 800
-    - family: LiquidIcons
-      fonts:
-        - asset: packages/liquid_flutter/fonts/LiquidIcons.ttf
 ```
 
 ### Localization
@@ -108,20 +95,22 @@ To utilize IMC Kit's UI components, incorporate the following providers and port
     )
     ```
 
-## Use the IMP Sheet 
+## Use the IMP Modal 
 
-To display the IMP Sheet, utilize the `ImpSheet` widget. It requires a connection strategy, a payload, and callbacks for the verification process:
+To display the IMP Modal, utilize the `ImpModalBuilder` widget. It requires a connection strategy, a payload, and callbacks for the verification process:
 
 
 ```dart
-  ImpSheet(
+  ImpModalBuilder(
     strategy: _connectionStrategy,
     payload: // Payload,
-    onVerificationDone: () {},
+    onVerificationDone: (measurement) {},
     onVerificationFailed: () {},
-    builder: (context, openSheet) {
-      // Call openSheet to open the IMP Sheet
-    },
+    onDismiss: () {}, // Optionally
+    canDismiss: true, // Define wether the user can dismiss the modal
+    builder: (context, openModal) {
+      // Call openModal to open the IMP Sheet
+    }
   ),
 
 ```

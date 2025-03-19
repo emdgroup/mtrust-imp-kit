@@ -11,13 +11,14 @@ dependencies:
     sdk: flutter
   mtrust_imp_kit:
     path: ../../
-  mtrust_urp_ble_strategy: ^8.0.1
-  liquid_flutter: ^15.3.2
+  mtrust_urp_ble_strategy: ^9.0.0-12
+  liquid_flutter: ^19.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.14.2
 
 flutter:
   uses-material-design: true

@@ -12,10 +12,46 @@ class AdvancedWorkflow extends StatefulWidget {
   }
 }
 
-class _AdvancedWorkflowState extends State<AdvancedWorkflow> {
+// The WidgetsBindingObserver is used to disconnect the reader
+// if the app is moved to background
+class _AdvancedWorkflowState extends State<AdvancedWorkflow> 
+  with WidgetsBindingObserver {
 
   final UrpBleStrategy _bleStrategy = UrpBleStrategy();
   late final ImpReader _impReader = ImpReader(connectionStrategy: _bleStrategy);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Disconnect the device if the app is paused
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.paused:
+        if(_bleStrategy.status == ConnectionStatus.connected) {
+          _bleStrategy.disconnectDevice();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.hidden:
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   // Find and connect a IMP Reader
   Future<void> findAndConnect() async {
@@ -105,8 +141,8 @@ class _ReaderWidgetState extends State<ReaderWidget> with AutomaticKeepAliveClie
   Future<int> measure() async {
     final response = await widget.reader.startMeasurement();
     // ignore: avoid_print
-    print('Measurement Result: ${response.result.first.id}');
-    return response.result.first.id;
+    print('Measurement Result: ${response.measurement.id}');
+    return response.measurement.id;
   }
 
   @override
@@ -156,12 +192,22 @@ class _ReaderWidgetState extends State<ReaderWidget> with AutomaticKeepAliveClie
       );
     } else {
       return Center(
-        child: ElevatedButton(
-          onPressed: primeReader, 
-          child: const Text(
-            'Prime reader and start Measurement',
-          ),
-        ),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: widget.reader.getName, 
+              child: const Text(
+                'Get name',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: primeReader, 
+              child: const Text(
+                'Prime reader and start Measurement',
+              ),
+            ),
+          ],
+        )
       );
     }
   }

@@ -16,5 +16,8 @@
     "searching": "Suchen...",
     "scanning": "Lesen...",
     "secondsLeft": "{seconds}s\nverbleibend",
-    "searchingHint": "Stellen Sie sicher, dass die LED \n am Reader blau blinkt."
+    "searchingHint": "Stellen Sie sicher, dass die LED \n am Reader blau blinkt.",
+    "incompatibleFirmware": "Inkompatible Firmware. Bitte Update durchführen!",
+    "tokenFailed": "Neuen Token abrufen fehlgeschlagen!",
+    "readingsLeft": "Verbleibende Messungen für aktuellen Token:"
 }

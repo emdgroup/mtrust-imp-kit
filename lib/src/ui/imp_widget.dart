@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_flutter/liquid_flutter.dart';
-import 'package:mtrust_imp_kit/src/format_utils.dart';
-import 'package:mtrust_imp_kit/src/imp_reader.dart';
+import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
 import 'package:mtrust_imp_kit/src/ui/count_down_progress.dart';
-import 'package:mtrust_imp_kit/src/ui/l10n/imp_localizations.dart';
-import 'package:mtrust_imp_kit/src/ui/scanning_instruction.dart';
-import 'package:mtrust_urp_core/mtrust_urp_core.dart';
-import 'package:mtrust_urp_ui/mtrust_urp_ui.dart';
-import 'package:mtrust_urp_types/imp.pb.dart';
 
 /// [ImpWidget] is a widget that guides the user through the p-Chip scanning
 /// workflow.
@@ -18,40 +12,67 @@ class ImpWidget extends StatelessWidget {
     required this.onIdentificationDone,
     required this.onIdentificationFailed,
     required this.chipIdFormat,
+    this.storageAdapter,
+    this.payload,
+    this.tokenAmount,
     super.key,
   });
 
   final ChipIdFormat? chipIdFormat;
 
+  /// The StorageAdapter to use for persisting the last connected and paired
+  /// devices.
+  final StorageAdapter? storageAdapter;
+
   /// The strategy to use for the connection.
   final ConnectionStrategy connectionStrategy;
 
   /// Will be called if a verification was successful.
-  final void Function(UrpImpMeasurement measurement) onIdentificationDone;
+  final void Function(UrpImpSecureMeasurement measurement) onIdentificationDone;
 
   /// Will be called if a verification failed.
   final void Function() onIdentificationFailed;
+
+  /// The payload to send to the reader.
+  final String? payload;
+
+  /// Amount of token to be requested on token refresh.
+  final int? tokenAmount;
 
   @override
   Widget build(BuildContext context) {
     return DeviceConnector(
       connectionStrategy: connectionStrategy,
+      storageAdapter: storageAdapter,
       connectedBuilder: (BuildContext context) {
-        return LdSubmit<bool>(
-          config: LdSubmitConfig<bool>(
+        return LdSubmit<UrpImpPrimeResponse?>(
+          config: LdSubmitConfig<UrpImpPrimeResponse?>(
             loadingText: ImpLocalizations.of(context).primingTitle,
             autoTrigger: true,
             action: () async {
               final reader = ImpReader(
                 connectionStrategy: connectionStrategy,
               );
-              await reader.prime();
-              return true;
+              if(tokenAmount != null) {
+                reader.setTokenAmount(tokenAmount!);
+              }
+              return await reader.prime(payload);
             },
           ),
-          builder: LdSubmitCustomBuilder<bool>(
+          builder: LdSubmitCustomBuilder<UrpImpPrimeResponse?>(
             builder: (context, controller, stateType) {
               if (stateType == LdSubmitStateType.error) {
+                String message = controller.state.error?.message ?? 'Unknown error';
+                if(controller.state.error?.exception.runtimeType == ImpReaderException) {
+                  final ImpReaderException error = controller.state.error?.exception as ImpReaderException;
+                  if(error.type == ImpReaderExceptionType.tokenFailed) {
+                    message = ImpLocalizations.of(context).tokenFailed;
+                  }
+                }
+                if(controller.state.error?.exception.runtimeType == ApiException) {
+                  final error = controller.state.error?.exception as ApiException;
+                  message = error.errorMessage;
+                }
                 return LdAutoSpace(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -60,7 +81,7 @@ class ImpWidget extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     LdTextP(
-                      controller.state.error?.moreInfo ?? 'Unknown error',
+                      message,
                     ),
                     const Expanded(
                       child: IMPReaderVisualization(
@@ -96,10 +117,11 @@ class ImpWidget extends StatelessWidget {
 
               return _ScanningView(
                 chipIdFormat: chipIdFormat,
+                remainingScans: controller.state.result?.gsa,
                 strategy: connectionStrategy,
-                onIdentificationDone: (measuremnt) {
+                onIdentificationDone: (measurement) {
                   controller.reset();
-                  onIdentificationDone(measuremnt);
+                  onIdentificationDone(measurement);
                 },
                 onVerificationFailed: () {
                   controller.reset();
@@ -120,31 +142,33 @@ class _ScanningView extends StatelessWidget {
     required this.strategy,
     required this.onIdentificationDone,
     required this.onVerificationFailed,
+    this.remainingScans,
     this.chipIdFormat,
   });
 
   final ChipIdFormat? chipIdFormat;
+  final int? remainingScans;
   final ConnectionStrategy strategy;
-  final void Function(UrpImpMeasurement measurement) onIdentificationDone;
+  final void Function(UrpImpSecureMeasurement measurement) onIdentificationDone;
   final void Function() onVerificationFailed;
 
-  String _getFormattedAddress(UrpImpMeasurement? measurement) {
+  String _getFormattedAddress(UrpImpSecureMeasurement? measurement) {
     if (measurement == null || chipIdFormat == null) {
       return 'Unknown ID';
     }
-    if (measurement.result.isEmpty) {
+    if (measurement.measurement.id.isNaN) {
       return 'Unknown ID';
     }
 
-    final id = measurement.result.first.id;
+    final id = measurement.measurement.id;
     return formatChipId(id, chipIdFormat!);
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LdSubmit<UrpImpMeasurement>(
-        config: LdSubmitConfig<UrpImpMeasurement>(
+      child: LdSubmit<UrpImpSecureMeasurement>(
+        config: LdSubmitConfig<UrpImpSecureMeasurement>(
           loadingText: ImpLocalizations.of(context).scanning,
           submitText: ImpLocalizations.of(context).startScan,
           timeout: const Duration(seconds: 35),
@@ -155,10 +179,11 @@ class _ScanningView extends StatelessWidget {
             return await reader.startMeasurement();
           },
         ),
-        builder: LdSubmitCustomBuilder<UrpImpMeasurement>(
+        builder: LdSubmitCustomBuilder<UrpImpSecureMeasurement>(
           builder: (context, measurementController, measurementStateType) {
-            return switch (measurementStateType) {
-              (LdSubmitStateType.loading) => LdAutoSpace(
+            switch (measurementStateType) {
+              case (LdSubmitStateType.loading): {
+                return LdAutoSpace(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   animate: true,
                   children: [
@@ -179,8 +204,10 @@ class _ScanningView extends StatelessWidget {
                     const CountDownProgress(),
                     ldSpacerL,
                   ],
-                ),
-              (LdSubmitStateType.result) => LdAutoSpace(
+                );
+              }
+              case (LdSubmitStateType.result): {
+                return LdAutoSpace(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   animate: true,
                   children: [
@@ -198,23 +225,29 @@ class _ScanningView extends StatelessWidget {
                       size: LdSize.l,
                     ),
                     ldSpacerL,
-                    LdButtonSuccess(
+                    LdButton(
                       onPressed: () => onIdentificationDone(
                         measurementController.state.result!,
                       ),
-                      context: context,
                       child: Text(
                         ImpLocalizations.of(context).done,
                       ),
                     ),
                   ],
-                ),
-              (LdSubmitStateType.idle) => LdAutoSpace(
+                );
+              }
+              case (LdSubmitStateType.idle): {
+                return LdAutoSpace(
                   animate: true,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     LdTextHs(
                       ImpLocalizations.of(context).readyToScan,
+                      textAlign: TextAlign.center,
+                    ),
+                    ldSpacerL,
+                    LdTextP(
+                      "${ImpLocalizations.of(context).readingsLeft} ${remainingScans ?? 'Unknown'}",
                       textAlign: TextAlign.center,
                     ),
                     LdTextP(
@@ -233,8 +266,17 @@ class _ScanningView extends StatelessWidget {
                       ),
                     ),
                   ],
-                ).padL(),
-              (LdSubmitStateType.error) => LdAutoSpace(
+                ).padL();
+              }
+              case (LdSubmitStateType.error): {
+                String message = ImpLocalizations.of(context).readingFailedMessage;
+                if(measurementController.state.error?.exception.runtimeType == ImpReaderException) {
+                  final ImpReaderException error = measurementController.state.error?.exception as ImpReaderException;
+                  if(error.type == ImpReaderExceptionType.incompatibleFirmware) {
+                    message = ImpLocalizations.of(context).incompatibleFirmware;
+                  }
+                }
+                return LdAutoSpace(
                   animate: true,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -243,7 +285,7 @@ class _ScanningView extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     LdTextP(
-                      ImpLocalizations.of(context).readingFailedMessage,
+                      message,
                       textAlign: TextAlign.center,
                     ),
                     const Expanded(
@@ -259,8 +301,9 @@ class _ScanningView extends StatelessWidget {
                       ),
                     ),
                   ],
-                ).padL(),
-            };
+                ).padL();
+              }
+            }
           },
         ),
       ),
