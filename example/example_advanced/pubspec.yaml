@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   mtrust_imp_kit:
     path: ../../
-  mtrust_urp_ble_strategy: ^9.0.0-12
+  mtrust_urp_ble_strategy: ^9.0.0
 
 dev_dependencies:
   flutter_test:
