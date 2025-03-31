@@ -106,7 +106,7 @@ To display the IMP Modal, utilize the `ImpModalBuilder` widget. It requires a co
 
 ```
 
-### Custom UI Example (10 step integration)
+### Custom UI Example for iOS (10 step integration)
 
 To build custom workflows, utilize the `ImpReader` class. It requires a connection strategy to handle the connection between the device and the reader. 
 
