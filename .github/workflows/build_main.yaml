@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-    commit-check:
+  commit-check:
     name: Commit Checker
     outputs:
       success: ${{ steps.check.outputs.success }}
