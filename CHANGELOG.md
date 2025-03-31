@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1-0](https://github.com/emdgroup/mtrust-imp-kit/compare/v3.0.0...v3.0.1-0) (2025-03-31)
+
+
+### Bug Fixes
+
+* correct indentation for commit-check job in build_main.yaml ([6b84c32](https://github.com/emdgroup/mtrust-imp-kit/commit/6b84c32193d284f1d6712d042bb6b5c9049b38e5))
+* get current token ([287d40a](https://github.com/emdgroup/mtrust-imp-kit/commit/287d40a40c5e12b474b4b4fdd222445598b2ac73))
+
 ## 3.0.0 (2025-03-19)
 
 
