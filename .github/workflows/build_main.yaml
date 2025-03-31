@@ -6,8 +6,32 @@ on:
       - main
 
 jobs:
+    commit-check:
+    name: Commit Checker
+    outputs:
+      success: ${{ steps.check.outputs.success }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check last commit
+        id: check
+        run: |
+          LAST_COMMITTER=$(git log -1 --pretty=format:'%an')
+  
+          if [[ "$LAST_COMMITTER" == "GitHub Actions" ]]; then
+            echo "Last commit was made by GitHub Actions. Exiting..."
+            echo "::set-output name=success::false"
+          else
+            echo "Last commit was made by a user. Executing..."
+            echo "::set-output name=success::true"
+          fi
+
   version:
     name: Version & Build
+    needs: commit-check
+    if: needs.commit-check.outputs.success == 'true'
     runs-on: macos-latest
     environment: release
     permissions:
@@ -96,6 +120,7 @@ jobs:
           git commit --allow-empty -m "chore(release): ${{ steps.get_new_version.outputs.result }}"
           git tag -a v${{ steps.get_new_version.outputs.result }} -m "Pub.dev version ${{ steps.get_new_version.outputs.result }}"
           git push origin v${{ steps.get_new_version.outputs.result }}
+          git push origin main
 
   rebase_dev:
     name: Write changes to dev branch
