@@ -33,7 +33,7 @@ jobs:
         with:
           script: |
             const {execSync} = require('child_process');
-            execSync('npx standard-version --dry-run', {stdio: 'inherit'});
+            execSync('npx standard-version --dry-run --prerelease', {stdio: 'inherit'});
 
   build_example:
     name: Build Example
