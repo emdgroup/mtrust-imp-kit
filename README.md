@@ -121,7 +121,7 @@ flutter pub add mtrust_imp_kit mtrust_urp_ble_strategy
 ```
 
 3. Add permission configuration to the `info.plist` for iOS:
-```plist
+```
   <key>NSBluetoothAlwaysUsageDescription</key>
   <string>This app always needs Bluetooth to function</string>
   <key>NSBluetoothPeripheralUsageDescription</key>
