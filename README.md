@@ -41,31 +41,19 @@ Please follow the instructions for configuring BLE for your respective platform 
 
 ## Usage
 
-### Fonts
-
-IMP-Kit utilizes the Lato font and custom icons. To include these assets, update your `pubspec.yaml`:
-
-```yaml
-fluter:
-  fonts: 
-    - family: Lato
-      fonts:
-        - asset: packages/liquid_flutter/fonts/Lato-Regular.ttf
-          weight: 500
-        - asset: packages/liquid_flutter/fonts/Lato-Bold.ttf
-          weight: 800
-```
-
 ### Localization
-To support multiple languages, add the necessary localization delegates to your application. For comprehensive guidance on internationalization, consult the [flutter documentation](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization).
+To support multiple languages, add the necessary localization delegates to your application. For comprehensive guidance on internationalization, consult the [flutter documentation](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization). Please note that you do not need the `LiquidLocalizations.delegate` and `UrpUiLocalizations.delegate` if
+you do not use the IMP Kit's UI components.
 
 ```dart
   return const MaterialApp(
     title: 'Your awesome application',
       localizationsDelegates: [
-        ...LiquidLocalizations.delegate,
-        ...UrpUiLocalizations.delegate,
-        ...ImpLocalizations.localizationsDelegates,
+        DefaultMaterialLocalizations.delegate,
+        DefaultWidgetsLocalizations.delegate,
+        LiquidLocalizations.delegate,
+        UrpUiLocalizations.delegate,
+        ImpLocalizations.delegate,
       ],
       
       home: MyHomePage(),
@@ -74,7 +62,7 @@ To support multiple languages, add the necessary localization delegates to your 
 
 ## Adding UI dependencies
 
-To utilize IMC Kit's UI components, incorporate the following providers and portals:
+To utilize IMP Kit's UI components, incorporate the following providers and portals:
 
 1. **Theme Provider:** Wrap your app with LdThemeProvider:
     ```dart
@@ -94,6 +82,9 @@ To utilize IMC Kit's UI components, incorporate the following providers and port
       ),
     )
     ```
+
+In case you do not want to use IMP Kit's UI components, you can control the IMP Reader using the `ImpReader` class.
+For more information please refer to [Use ImpReader to build custom workflows](#use-impreader-to-build-custom-workflows)
 
 ## Use the IMP Modal 
 

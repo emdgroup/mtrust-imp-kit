@@ -329,7 +329,6 @@ class ImpReader extends CmdWrapper {
       final res = await _addCommandToQueue(deviceCommand: cmd);
       return UrpImpPrimeResponse.fromBuffer(res.payload);
     } catch (e) {
-      urpLogger.e(e);
       if(e is DeviceError) {
         if(e.errorCode == 4) {
           final publicKey = await getPublicKey();
@@ -386,7 +385,7 @@ class ImpReader extends CmdWrapper {
   }
 
   /// Request the currently installed token from the device
-  Future<UrpSecureToken> getCurrentToken() async {
+  Future<UrpToken> getCurrentToken() async {
     final UrpImpDeviceCommand cmd = UrpImpDeviceCommand(
       command: UrpImpCommand.urpImpGetToken,
     );
@@ -400,7 +399,7 @@ class ImpReader extends CmdWrapper {
         type: ImpReaderExceptionType.tokenFailed,
       );
     }
-    return UrpSecureToken.fromBuffer(res.payload);
+    return UrpToken.fromBuffer(res.payload);
   }
 
   /// Unprime a measurement
