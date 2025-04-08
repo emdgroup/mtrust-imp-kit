@@ -224,7 +224,7 @@ abstract class ImpLocalizations {
   /// No description provided for @tokenFailed.
   ///
   /// In en, this message translates to:
-  /// **'Getting new token failed!'**
+  /// **'Failed to prepare for reading. Please make sure you have a working internet connection'**
   String get tokenFailed;
 
   /// No description provided for @readingsLeft.

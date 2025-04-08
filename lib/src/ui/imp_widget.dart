@@ -70,23 +70,23 @@ class ImpWidget extends StatelessWidget {
                   }
                 }
                 if(controller.state.error?.exception.runtimeType == ApiException) {
-                  final error = controller.state.error?.exception as ApiException;
-                  message = error.errorMessage;
+                  message = ImpLocalizations.of(context).tokenFailed;
                 }
                 return LdAutoSpace(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LdTextH(
+                    LdTextHs(
                       ImpLocalizations.of(context).primeFailed,
                       textAlign: TextAlign.center,
-                    ),
-                    LdTextP(
-                      message,
                     ),
                     const Expanded(
                       child: IMPReaderVisualization(
                         ledColor: Colors.red,
                       ),
+                    ),
+                    LdTextP(
+                      message,
+                      textAlign: TextAlign.center,
                     ),
                     LdButtonWarning(
                       onPressed: controller.trigger,

@@ -72,7 +72,7 @@ class ImpLocalizationsEn extends ImpLocalizations {
   String get incompatibleFirmware => 'Firmware incompatible. Please update!';
 
   @override
-  String get tokenFailed => 'Getting new token failed!';
+  String get tokenFailed => 'Failed to prepare for reading. Please make sure you have a working internet connection';
 
   @override
   String get readingsLeft => 'Readings left for current token:';
