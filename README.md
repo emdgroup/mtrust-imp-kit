@@ -110,9 +110,9 @@ To display the IMP Modal, utilize the `ImpModalBuilder` widget. It requires a co
 
 To build custom workflows, utilize the `ImpReader` class. It requires a connection strategy to handle the connection between the device and the reader. 
 
-1. Create a new Flutter application e.g. using VSCode:  
+1. Create a new Flutter application:  
 ```bash
-Command + Shift + P -> Flutter: New Project -> Empty Application
+flutter create -e my_app
 ```
 
 2. Install flutter dependencies:
