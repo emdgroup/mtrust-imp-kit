@@ -18,6 +18,6 @@
     "secondsLeft": "{seconds}s\nverbleibend",
     "searchingHint": "Stellen Sie sicher, dass die LED \n am Reader blau blinkt.",
     "incompatibleFirmware": "Inkompatible Firmware. Bitte Update durchführen!",
-    "tokenFailed": "Neuen Token abrufen fehlgeschlagen!",
+    "tokenFailed": "Die Vorbereitung für den Lesevorgang ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine funktionierende Internetverbindung haben.",
     "readingsLeft": "Verbleibende Messungen für aktuellen Token:"
 }

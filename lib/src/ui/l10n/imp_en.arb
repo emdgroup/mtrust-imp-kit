@@ -21,6 +21,6 @@
     "secondsLeft": "{seconds}s left",
     "searchingHint": "Make sure the LED \n on the reader is flashing blue.",
     "incompatibleFirmware": "Firmware incompatible. Please update!",
-    "tokenFailed": "Getting new token failed!",
+    "tokenFailed": "Failed to prepare for reading. Please make sure you have a working internet connection",
     "readingsLeft": "Readings left for current token:"
 }
