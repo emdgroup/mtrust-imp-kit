@@ -68,13 +68,15 @@ class ImpLocalizationsEn extends ImpLocalizations {
   }
 
   @override
-  String get searchingHint => 'Make sure the LED \n on the reader is flashing blue.';
+  String get searchingHint =>
+      'Make sure the LED \n on the reader is flashing blue.';
 
   @override
   String get incompatibleFirmware => 'Firmware incompatible. Please update!';
 
   @override
-  String get tokenFailed => 'Failed to prepare for reading. Please make sure you have a working internet connection';
+  String get tokenFailed =>
+      'Failed to prepare for reading. Please make sure you have a working internet connection';
 
   @override
   String get readingsLeft => 'Readings left for current token:';

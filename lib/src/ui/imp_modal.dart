@@ -162,7 +162,6 @@ LdModal impModal({
 }) {
   return LdModal(
     disableScrolling: true,
-    padding: EdgeInsets.zero,
     noHeader: true,
     showDismissButton: canDismiss,
     userCanDismiss: canDismiss,
