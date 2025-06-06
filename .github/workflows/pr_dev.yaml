@@ -76,7 +76,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
+        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@dev
         with:
           directory: example/example_advanced
 
@@ -104,7 +104,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
+        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@dev
         with:
           directory: .
 
