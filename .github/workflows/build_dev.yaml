@@ -77,13 +77,13 @@ jobs:
 
       # Bump the pubspec.yaml file
       - name: ⬆️ Bump pubspec.yaml
-        uses: emdgroup/mtrust-urp/.github/actions/update-pubspec@main
+        uses: emdgroup/mtrust-urp/.github/actions/update-pubspec@dev
         with:
           version: ${{ steps.get_new_version.outputs.result }}
           directory: .
 
       - name: 📝 Update version in readme
-        uses: emdgroup/mtrust-urp/.github/actions/update-pubspec-readme-version@main
+        uses: emdgroup/mtrust-urp/.github/actions/update-pubspec-readme-version@dev
         with:
           directory: .
 
@@ -96,13 +96,13 @@ jobs:
           directory: "."
 
       - name: Validate Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/validate-flutter@main
+        uses: emdgroup/mtrust-urp/.github/actions/validate-flutter@dev
         with:
           directory: "."
           is_package: true
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@dev
         with:
           directory: "."
 

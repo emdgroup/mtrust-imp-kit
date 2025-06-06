@@ -48,7 +48,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
+        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@dev
         with:
           directory: example/example
 
@@ -59,7 +59,7 @@ jobs:
         shell: bash
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@dev
         with:
           directory: example/example
 
@@ -87,7 +87,7 @@ jobs:
         shell: bash
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@dev
         with:
           directory: example/example_advanced
 
@@ -109,12 +109,12 @@ jobs:
           directory: .
 
       - name: Validate Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/validate-flutter@main
+        uses: emdgroup/mtrust-urp/.github/actions/validate-flutter@dev
         with:
           directory: .
           is_package: true
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@dev
         with:
           directory: .
