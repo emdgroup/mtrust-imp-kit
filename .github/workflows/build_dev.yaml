@@ -91,7 +91,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@dev
+        uses: ./.github/actions/prepare-flutter
         with:
           directory: "."
 
