@@ -39,7 +39,8 @@ class ImpLocalizationsDe extends ImpLocalizations {
   String get turnOnPrompt => 'Zum Einschalten Taste drücken';
 
   @override
-  String get timeHint => 'Sobald der Vorgang gestartet wurde, haben Sie 30 Sekunden Zeit zum Lesen';
+  String get timeHint =>
+      'Sobald der Vorgang gestartet wurde, haben Sie 30 Sekunden Zeit zum Lesen';
 
   @override
   String get readyToScan => 'Bereit zum Lesen';
@@ -68,13 +69,16 @@ class ImpLocalizationsDe extends ImpLocalizations {
   }
 
   @override
-  String get searchingHint => 'Stellen Sie sicher, dass die LED \n am Reader blau blinkt.';
+  String get searchingHint =>
+      'Stellen Sie sicher, dass die LED \n am Reader blau blinkt.';
 
   @override
-  String get incompatibleFirmware => 'Inkompatible Firmware. Bitte Update durchführen!';
+  String get incompatibleFirmware =>
+      'Inkompatible Firmware. Bitte Update durchführen!';
 
   @override
-  String get tokenFailed => 'Die Vorbereitung für den Lesevorgang ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine funktionierende Internetverbindung haben.';
+  String get tokenFailed =>
+      'Die Vorbereitung für den Lesevorgang ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine funktionierende Internetverbindung haben.';
 
   @override
   String get readingsLeft => 'Verbleibende Messungen für aktuellen Token:';
