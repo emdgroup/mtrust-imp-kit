@@ -77,13 +77,13 @@ jobs:
 
       # Bump the pubspec.yaml file
       - name: ⬆️ Bump pubspec.yaml
-        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/update-pubspec@dev
+        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec@dev
         with:
           version: ${{ steps.get_new_version.outputs.result }}
           directory: .
 
       - name: 📝 Update version in readme
-        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/update-pubspec-readme-version@dev
+        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec-readme-version@dev
         with:
           directory: .
 
@@ -91,18 +91,18 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/prepare-flutter@dev
+        uses: emdgroup/mtrust-urp/.github/shared_actions/prepare-flutter@dev
         with:
           directory: "."
 
       - name: Validate Flutter
-        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/validate-flutter@dev
+        uses: emdgroup/mtrust-urp/.github/shared_actions/validate-flutter@dev
         with:
           directory: "."
           is_package: true
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/check-dart-licenses@dev
+        uses: emdgroup/mtrust-urp/.github/shared_actions/check-dart-licenses@dev
         with:
           directory: "."
 
