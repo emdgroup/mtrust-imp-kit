@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.2-0](https://github.com/emdgroup/mtrust-imp-kit/compare/v3.0.1...v3.0.2-0) (2025-06-11)
+
+
+### Bug Fixes
+
+* ble mtu size issue, Flutter 3.32 compatibility ([be399e8](https://github.com/emdgroup/mtrust-imp-kit/commit/be399e8190c56a393ebad76cd621b6ffbe6d4dd4))
+* token error message ([a4792d4](https://github.com/emdgroup/mtrust-imp-kit/commit/a4792d496041128f933254095b4f78c5a184cacb))
+
 ### [3.0.1](https://github.com/emdgroup/mtrust-imp-kit/compare/v3.0.1-0...v3.0.1) (2025-03-31)
 
 ### [3.0.1-0](https://github.com/emdgroup/mtrust-imp-kit/compare/v3.0.0...v3.0.1-0) (2025-03-31)
