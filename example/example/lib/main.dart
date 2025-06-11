@@ -45,9 +45,8 @@ class MainApp extends StatelessWidget {
               false, //Disable debug banner (top right) in debug mode
           home: LdPortal(
             child: Scaffold(
-                appBar: LdAppBar(
-                  context: context,
-                  title: const Text('IMP Example Application'),
+                appBar: const LdAppBar(
+                  title: Text('IMP Example Application'),
                 ),
                 body: ImpModalBuilder(
                   turnOffOnClose: false,

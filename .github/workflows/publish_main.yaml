@@ -19,7 +19,7 @@ jobs:
           token: ${{secrets.ELEVATED_TOKEN}}
 
       - name: Publish mtrust_imp_kit
-        uses: emdgroup/mtrust-urp/.github/actions/publish-pub-dev@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/publish-pub-dev@main
         with:
           directory: "."
           publish_mode: --force

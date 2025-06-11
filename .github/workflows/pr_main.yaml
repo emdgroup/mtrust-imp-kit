@@ -48,7 +48,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/prepare-flutter@main
         with:
           directory: example/example
 
@@ -59,7 +59,7 @@ jobs:
         shell: bash
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/check-dart-licenses@main
         with:
           directory: example/example
 
@@ -76,7 +76,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/prepare-flutter@main
         with:
           directory: example/example_advanced
 
@@ -87,7 +87,7 @@ jobs:
         shell: bash
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/check-dart-licenses@main
         with:
           directory: example/example_advanced
 
@@ -104,17 +104,17 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Prepare Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/prepare-flutter@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/prepare-flutter@main
         with:
           directory: .
 
       - name: Validate Flutter
-        uses: emdgroup/mtrust-urp/.github/actions/validate-flutter@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/validate-flutter@main
         with:
           directory: .
           is_package: true
 
       - name: Check licenses
-        uses: emdgroup/mtrust-urp/.github/actions/check-dart-licenses@main
+        uses: emdgroup/mtrust-urp/mtrust_urp_core/shared_workflows/.github/actions/check-dart-licenses@main
         with:
           directory: .
