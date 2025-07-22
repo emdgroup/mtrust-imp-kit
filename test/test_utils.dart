@@ -26,6 +26,13 @@ class CompleterStrategy {
   CompleterStrategy({bool withReaders = false}) {
     strategy = UrpVirtualStrategy((UrpRequest request) async {
       final payload = UrpImpCommandWrapper.fromBuffer(request.payload);
+      if(payload.coreCommand.command == UrpCommand.urpGetInfo) {
+        return UrpResponse(
+          payload: UrpDeviceInfo(
+            fwVersion: '2.9.17',
+          ).writeToBuffer(),
+        );
+      }
       switch (payload.deviceCommand.command) {
         case (UrpImpCommand.urpImpPrime):
           primeCompleter = Completer<void>();

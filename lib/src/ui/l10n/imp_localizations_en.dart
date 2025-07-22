@@ -36,6 +36,9 @@ class ImpLocalizationsEn extends ImpLocalizations {
   String get connected => 'Connected';
 
   @override
+  String get disconnect => 'Disconnect';
+
+  @override
   String get turnOnPrompt => 'Press the button on the reader to turn it on';
 
   @override
@@ -72,7 +75,15 @@ class ImpLocalizationsEn extends ImpLocalizations {
       'Make sure the LED \n on the reader is flashing blue.';
 
   @override
-  String get incompatibleFirmware => 'Firmware incompatible. Please update!';
+  String get incompatibleFirmware => 'Reader version incompatible';
+
+  @override
+  String get requiredFirmware =>
+      'This app requires a reader with a firmware version of';
+
+  @override
+  String get firmwareHint =>
+      'If you are the device owner, you can update the device firmware in the M-Trust console';
 
   @override
   String get tokenFailed =>
