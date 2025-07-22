@@ -17,7 +17,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
-        REPO=merckgroup/mtrust-device-sim
+        REPO=merckgroup/mtrust-fw-imp-2-0
         
         # Debug: Check the raw response
         echo "Fetching tags from $REPO..."
