@@ -242,6 +242,8 @@ jobs:
 
       - name: Commit and push compatibility matrix
         run: |
+          git fetch origin ${{ github.head_ref }}
+          git reset --soft origin/${{ github.head_ref }}
           git add assets/firmware_compatibility.json
           git commit -m "chore: update firmware compatibility matrix [skip ci]"
-          git push origin HEAD:${{ github.head_ref }} --force-with-lease
+          git push origin HEAD:${{ github.head_ref }}
