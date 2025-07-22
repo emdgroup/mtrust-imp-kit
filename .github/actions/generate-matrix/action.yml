@@ -20,12 +20,19 @@ runs:
         mkdir -p assets
         tmpfile=$(mktemp)
 
-        echo '{}' > $tmpfile
+        # Initialize with existing compatibility data if available
+        if [ -f "assets/firmware_compatibility.json" ]; then
+          echo "Found existing compatibility file, preserving previous results"
+          cp assets/firmware_compatibility.json $tmpfile
+        else
+          echo "No existing compatibility file found, starting fresh"
+          echo '{}' > $tmpfile
+        fi
 
         # Read package version from pubspec.yaml
         package_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
 
-        # Extract and group firmware versions per SDK
+        # Extract and group firmware versions per SDK from new test results
         find all-results -name compat.json | while read file; do
           sdk=$(jq -r .sdk "$file")
           fw=$(jq -r .firmware "$file")
@@ -34,9 +41,22 @@ runs:
           sdk=${sdk#v}
           fw=${fw#v}
 
+          echo "Processing test result: SDK=$sdk, Firmware=$fw"
+
+          # Merge new firmware version with existing ones for this SDK
           tmp=$(mktemp)
           jq --arg sdk "$sdk" --arg fw "$fw" '
-            .[$sdk] += [$fw] // {($sdk): [$fw]}
+            if has($sdk) then
+              # SDK exists, add firmware if not already present
+              if (.[$sdk] | index($fw)) then
+                .  # Firmware already exists, no change
+              else
+                .[$sdk] += [$fw]  # Add new firmware version
+              end
+            else
+              # SDK doesn't exist, create new entry
+              .[$sdk] = [$fw]
+            end
           ' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
         done
 
@@ -50,12 +70,18 @@ runs:
                 key: .key,
                 value: (
                   .value | sort_by(split(".") | map(tonumber)) |
-                  "\(.[0]) - \(.[-1])"
+                  if length == 1 then
+                    "\(.[0]) - \(.[0])"  # Single version: "2.9.20 - 2.9.20"
+                  else
+                    "\(.[0]) - \(.[-1])"  # Multiple versions: "2.9.20 - 2.9.21"
+                  end
                 )
               }) | from_entries
             )
           }
         ' "$tmpfile" > assets/firmware_compatibility.json
+
+        echo "Generated compatibility matrix with preserved historical data"
 
     - name: Upload full matrix
       uses: actions/upload-artifact@v4
