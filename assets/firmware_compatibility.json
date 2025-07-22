@@ -1,6 +1,4 @@
 {
   "package_version": "3.0.2-1",
-  "compatibility": {
-    "3.0.2-1": "2.9.17 - 2.9.17"
-  }
+  "compatibility": {}
 }
