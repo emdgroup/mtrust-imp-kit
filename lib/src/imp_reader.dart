@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
 import 'package:pub_semver/pub_semver.dart';
