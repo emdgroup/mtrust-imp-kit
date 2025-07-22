@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.ELEVATED_TOKEN}}
 
       - name: 📇 Configure git
         run: |
@@ -133,7 +133,7 @@ jobs:
         uses: ./.github/actions/fetch-firmware-versions
         id: fetch-firmware-versions
         with:
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.ELEVATED_TOKEN}}
 
       - name: Fetch SDK versions
         uses: ./.github/actions/fetch-sdk-versions
@@ -195,7 +195,7 @@ jobs:
       - name: Test compatibility
         uses: ./.github/actions/test-compatibility
         with:
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.ELEVATED_TOKEN}}
           firmware_version: ${{ matrix.firmware }}
           sdk_version: ${{ matrix.sdk }}
 
