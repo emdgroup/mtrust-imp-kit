@@ -16,7 +16,7 @@ runs:
     - name: Checkout SDK
       uses: actions/checkout@v4
       with:
-        repository: emdgroup/mtrust-sec-kit
+        repository: emdgroup/mtrust-imp-kit
         ref: ${{ inputs.sdk_version }}
         path: sdk
 
