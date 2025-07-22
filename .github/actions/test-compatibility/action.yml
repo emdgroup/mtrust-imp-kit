@@ -40,8 +40,11 @@ runs:
     - name: Default tests for device sim
       uses: ./mtrust-device-sim/.github/actions/test-urp-sim
 
-    - name: Setup Dart
-      uses: dart-lang/setup-dart@v1
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.1'
+        channel: 'stable'
 
     - name: Validate SDK
       uses: emdgroup/mtrust-urp/.github/shared_actions/validate-flutter@dev
