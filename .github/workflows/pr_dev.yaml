@@ -186,6 +186,7 @@ jobs:
     needs: matrix-generation
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.matrix-generation.outputs.matrix) }}
     steps:
@@ -202,6 +203,7 @@ jobs:
   generate-compatibility-matrix:
     name: Generate Compatibility Matrix
     needs: [build_library, compatibility-tests]
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
