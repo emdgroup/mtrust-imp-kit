@@ -34,24 +34,24 @@ runs:
           echo "Valid JSON array received"
           tags=$(echo "$response" | jq -r '.[].name // empty')
           if [ -n "$tags" ]; then
-            # Filter for major.minor versions only (no patch versions)
-            # This regex matches versions like v1.0, v2.1, v10.5, etc.
-            major_minor_tags=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+$' || true)
+            # Filter for major.minor.patch versions
+            # This regex matches versions like v1.0.0, v2.1.5, v2.9.17, etc.
+            firmware_tags=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true)
             
-            if [ -n "$major_minor_tags" ]; then
+            if [ -n "$firmware_tags" ]; then
               # Sort by version and take the 3 latest
-              latest_3_tags=$(echo "$major_minor_tags" | sort -V | tail -3)
+              latest_3_tags=$(echo "$firmware_tags" | sort -V | tail -3)
               
-              echo "Found major.minor firmware versions:"
-              echo "$major_minor_tags"
+              echo "Found firmware versions:"
+              echo "$firmware_tags"
               echo ""
-              echo "Latest 3 major.minor firmware versions:"
+              echo "Latest 3 firmware versions:"
               echo "$latest_3_tags"
               
               tags_json=$(echo "$latest_3_tags" | jq -R . | jq -s -c .)
               echo "versions=$tags_json" >> $GITHUB_OUTPUT
             else
-              echo "No major.minor version tags found"
+              echo "No firmware version tags found"
               echo "versions=[]" >> $GITHUB_OUTPUT
             fi
           else
