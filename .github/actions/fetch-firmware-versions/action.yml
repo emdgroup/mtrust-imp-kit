@@ -1,0 +1,66 @@
+name: Fetch Firmware Versions
+description: Clones the firmware repo and extracts available tags.
+inputs:
+  token:
+    description: GitHub token for API access
+    required: true
+outputs:
+  versions:
+    description: JSON array of firmware tags
+    value: ${{ steps.set-output.outputs.versions }}
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch firmware tags via REST
+      id: set-output
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        REPO=merckgroup/mtrust-device-sim
+        
+        # Debug: Check the raw response
+        echo "Fetching tags from $REPO..."
+        response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/$REPO/tags?per_page=100")
+        
+        # Debug: Show response structure
+        echo "Response preview:"
+        echo "$response" | head -c 200
+        echo "..."
+        
+        # Check if response is valid JSON and contains expected data
+        if echo "$response" | jq -e 'type == "array"' > /dev/null; then
+          echo "Valid JSON array received"
+          tags=$(echo "$response" | jq -r '.[].name // empty')
+          if [ -n "$tags" ]; then
+            # Filter for major.minor versions only (no patch versions)
+            # This regex matches versions like v1.0, v2.1, v10.5, etc.
+            major_minor_tags=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+$' || true)
+            
+            if [ -n "$major_minor_tags" ]; then
+              # Sort by version and take the 3 latest
+              latest_3_tags=$(echo "$major_minor_tags" | sort -V | tail -3)
+              
+              echo "Found major.minor firmware versions:"
+              echo "$major_minor_tags"
+              echo ""
+              echo "Latest 3 major.minor firmware versions:"
+              echo "$latest_3_tags"
+              
+              tags_json=$(echo "$latest_3_tags" | jq -R . | jq -s -c .)
+              echo "versions=$tags_json" >> $GITHUB_OUTPUT
+            else
+              echo "No major.minor version tags found"
+              echo "versions=[]" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No tags found in response"
+            echo "versions=[]" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "Invalid response or error from GitHub API"
+          echo "Full response: $response"
+          echo "versions=[]" >> $GITHUB_OUTPUT
+        fi
+        

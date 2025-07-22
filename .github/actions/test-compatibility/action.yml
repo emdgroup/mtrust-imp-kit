@@ -1,0 +1,68 @@
+name: Test Firmware/SDK Compatibility
+description: Runs compatibility tests between a firmware version and an SDK version.
+inputs:
+  firmware_version:
+    required: true
+    description: Firmware version tag
+  sdk_version:
+    required: true
+    description: SDK version tag
+  token:
+    required: true
+    description: GitHub token for accessing private repositories
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout SDK
+      uses: actions/checkout@v4
+      with:
+        repository: emdgroup/mtrust-sec-kit
+        ref: ${{ inputs.sdk_version }}
+        path: sdk
+
+    - name: Checkout device sim repo
+      uses: actions/checkout@v4
+      with:
+        repository: merckgroup/mtrust-device-sim
+        ref: dev
+        path: mtrust-device-sim
+        token: ${{ inputs.token }}
+
+    - name: Start device sim
+      id: urp-sim
+      uses: ./mtrust-device-sim/.github/actions/start-urp-sim
+      with:
+        repository: "mtrust-urp-os"
+        tag: ${{ inputs.firmware_version }}
+        environment: "d"
+        token: ''
+
+    - name: Default tests for device sim
+      uses: ./mtrust-device-sim/.github/actions/test-urp-sim
+
+    - name: Validate SDK
+      uses: emdgroup/mtrust-urp/.github/shared_actions/validate-flutter@dev
+      with:
+        directory: sdk
+        is_package: true
+        api_url: "https://api.dev.mtrust.io"
+
+    - name: Mark compatibility as passed
+      if: success()
+      shell: bash
+      run: |
+        mkdir -p result
+        echo '{"firmware": "${{ inputs.firmware_version }}", "sdk": "${{ inputs.sdk_version }}"}' > result/compat.json
+
+    - name: Upload result
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: compat-${{ inputs.firmware_version }}-${{ inputs.sdk_version }}
+        path: result/compat.json
+
+    - name: Stop device sim
+      uses: ./mtrust-device-sim/.github/actions/stop-urp-sim
+      with:
+        websocket_pid: ${{ steps.urp-sim.outputs.websocket_pid }}
+        pio_pid: ${{ steps.urp-sim.outputs.pio_pid }}
