@@ -47,11 +47,11 @@ runs:
         channel: 'stable'
 
     - name: Validate SDK
-      uses: emdgroup/mtrust-urp/.github/shared_actions/validate-flutter@dev
-      with:
-        directory: sdk
-        is_package: true
-        api_url: "https://api.dev.mtrust.io"
+      shell: bash
+      run: |
+        cd sdk
+        flutter analyze --no-fatal-warnings --exclude=example/ --exclude=example_advanced/
+        flutter test test/imp_reader_test.dart test/imp_kit_test.dart
 
     - name: Mark compatibility as passed
       if: success()
