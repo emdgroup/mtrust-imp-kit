@@ -45,41 +45,11 @@ runs:
 
           # Merge new firmware version with existing ones for this SDK
           tmp=$(mktemp)
-          jq --arg sdk "$sdk" --arg fw "$fw" '
-            if has($sdk) then
-              # SDK exists, add firmware if not already present
-              if (.[$sdk] | index($fw)) then
-                .  # Firmware already exists, no change
-              else
-                .[$sdk] += [$fw]  # Add new firmware version
-              end
-            else
-              # SDK doesn't exist, create new entry
-              .[$sdk] = [$fw]
-            end
-          ' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
+          jq --arg sdk "$sdk" --arg fw "$fw" 'if has($sdk) then if (.[$sdk] | index($fw)) then . else .[$sdk] += [$fw] end else .[$sdk] = [$fw] end' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
         done
 
         # Convert lists to semver ranges and create final JSON structure
-        jq --arg version "$package_version" '
-          {
-            package_version: $version,
-            compatibility: (
-              to_entries |
-              map({
-                key: .key,
-                value: (
-                  .value | sort_by(split(".") | map(tonumber)) |
-                  if length == 1 then
-                    "\(.[0]) - \(.[0])"  # Single version: "2.9.20 - 2.9.20"
-                  else
-                    "\(.[0]) - \(.[-1])"  # Multiple versions: "2.9.20 - 2.9.21"
-                  end
-                )
-              }) | from_entries
-            )
-          }
-        ' "$tmpfile" > assets/firmware_compatibility.json
+        jq --arg version "$package_version" '{package_version: $version, compatibility: (to_entries | map({key: .key, value: (.value | sort_by(split(".") | map(tonumber)) | if length == 1 then "\(.[0]) - \(.[0])" else "\(.[0]) - \(.[-1])" end)}) | from_entries)}' "$tmpfile" > assets/firmware_compatibility.json
 
         echo "Generated compatibility matrix with preserved historical data"
 
