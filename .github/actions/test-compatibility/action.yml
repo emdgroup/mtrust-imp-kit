@@ -13,11 +13,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout SDK
+    - name: Checkout SDK (current PR branch)
       uses: actions/checkout@v4
       with:
         repository: emdgroup/mtrust-imp-kit
-        ref: ${{ inputs.sdk_version }}
+        ref: ${{ github.head_ref }}
         path: sdk
 
     - name: Checkout device sim repo
@@ -57,13 +57,16 @@ runs:
       shell: bash
       run: |
         mkdir -p result
-        echo '{"firmware": "${{ inputs.firmware_version }}", "sdk": "${{ inputs.sdk_version }}"}' > result/compat.json
+        # Get the current package version from the PR branch
+        cd sdk
+        package_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+        echo '{"firmware": "${{ inputs.firmware_version }}", "sdk": "v'$package_version'"}' > ../result/compat.json
 
     - name: Upload result
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: compat-${{ inputs.firmware_version }}-${{ inputs.sdk_version }}
+        name: compat-${{ inputs.firmware_version }}-current-sdk-branch
         path: result/compat.json
 
     - name: Stop device sim
