@@ -57,13 +57,36 @@ runs:
               firmware_tags=$(echo "$all_tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -Fxf <(echo "$tags_with_releases") || true)
               
               if [ -n "$firmware_tags" ]; then
-                # Sort by version and take the 3 latest
-                latest_3_tags=$(echo "$firmware_tags" | sort -V | tail -3)
+                # Group by major.minor version and select the latest fix version from each group
+                # Sort by version to ensure we get the latest fix versions first
+                sorted_tags=$(echo "$firmware_tags" | sort -V)
+                
+                # Extract unique major.minor versions and get the latest fix for each
+                latest_fixes=""
+                while IFS= read -r tag; do
+                  # Extract major.minor version (e.g., v2.9 from v2.9.17)
+                  major_minor=$(echo "$tag" | sed -E 's/^v([0-9]+\.[0-9]+)\.[0-9]+$/\1/')
+                  major_minor_with_v="v$major_minor"
+                  
+                  # Find the latest fix version for this major.minor
+                  latest_fix=$(echo "$sorted_tags" | grep "^$major_minor_with_v\." | tail -1)
+                  
+                  # Add to our list if not already present
+                  if [ -n "$latest_fix" ] && ! echo "$latest_fixes" | grep -q "$major_minor_with_v"; then
+                    latest_fixes="$latest_fixes$latest_fix"$'\n'
+                  fi
+                done <<< "$sorted_tags"
+                
+                # Take the 3 latest major.minor versions
+                latest_3_tags=$(echo "$latest_fixes" | sort -V | tail -3)
                 
                 echo "Found firmware tags with releases:"
                 echo "$firmware_tags"
                 echo ""
-                echo "Latest 3 firmware tags with releases:"
+                echo "Latest fix versions for each major.minor:"
+                echo "$latest_fixes"
+                echo ""
+                echo "Latest 3 firmware versions (latest fix from each major.minor):"
                 echo "$latest_3_tags"
                 
                 tags_json=$(echo "$latest_3_tags" | jq -R . | jq -s -c .)
