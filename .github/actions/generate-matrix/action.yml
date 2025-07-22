@@ -33,7 +33,7 @@ runs:
         package_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
 
         # Extract and group firmware versions per SDK from new test results
-        find all-results -name compat.json | while read file; do
+        for file in $(find all-results -name compat.json); do
           sdk=$(jq -r .sdk "$file")
           fw=$(jq -r .firmware "$file")
 

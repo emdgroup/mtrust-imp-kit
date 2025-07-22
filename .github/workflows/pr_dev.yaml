@@ -221,7 +221,6 @@ jobs:
   commit-compatibility-matrix:
     name: Commit Compatibility Matrix
     needs: generate-compatibility-matrix
-    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
