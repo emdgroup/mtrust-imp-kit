@@ -20,14 +20,8 @@ runs:
         mkdir -p assets
         tmpfile=$(mktemp)
 
-        # Initialize with existing compatibility data if available
-        if [ -f "assets/firmware_compatibility.json" ]; then
-          echo "Found existing compatibility file, preserving previous results"
-          cp assets/firmware_compatibility.json $tmpfile
-        else
-          echo "No existing compatibility file found, starting fresh"
-          echo '{}' > $tmpfile
-        fi
+        # Initialize with empty structure
+        echo '{}' > $tmpfile
 
         # Read package version from pubspec.yaml
         package_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
@@ -43,15 +37,15 @@ runs:
 
           echo "Processing test result: SDK=$sdk, Firmware=$fw"
 
-          # Merge new firmware version with existing ones for this SDK
+          # Add firmware version to SDK (override if SDK already exists)
           tmp=$(mktemp)
-          jq --arg sdk "$sdk" --arg fw "$fw" 'if has($sdk) then if (.[$sdk] | index($fw)) then . else .[$sdk] += [$fw] end else .[$sdk] = [$fw] end' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
+          jq --arg sdk "$sdk" --arg fw "$fw" '.[$sdk] += [$fw]' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
         done
 
         # Convert lists to semver ranges and create final JSON structure
         jq --arg version "$package_version" '{package_version: $version, compatibility: (to_entries | map({key: .key, value: (.value | sort_by(split(".") | map(tonumber)) | if length == 1 then "\(.[0]) - \(.[0])" else "\(.[0]) - \(.[-1])" end)}) | from_entries)}' "$tmpfile" > assets/firmware_compatibility.json
 
-        echo "Generated compatibility matrix with preserved historical data"
+        echo "Generated compatibility matrix with current test results"
 
     - name: Upload full matrix
       uses: actions/upload-artifact@v4
