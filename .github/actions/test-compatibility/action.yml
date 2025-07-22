@@ -26,7 +26,7 @@ runs:
         repository: merckgroup/mtrust-device-sim
         ref: dev
         path: mtrust-device-sim
-        token: ${{ secrets.TOKEN }}
+        token: ${{ inputs.token }}
 
     - name: Start device sim
       id: urp-sim
@@ -35,7 +35,7 @@ runs:
         repository: "mtrust-fw-imp-2-0"
         tag: ${{ inputs.firmware_version }}
         environment: "d"
-        token: ${{ secrets.TOKEN }}
+        token: ${{ inputs.token }}
 
     - name: Default tests for device sim
       uses: ./mtrust-device-sim/.github/actions/test-urp-sim
