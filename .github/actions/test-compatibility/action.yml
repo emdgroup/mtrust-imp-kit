@@ -50,7 +50,7 @@ runs:
       shell: bash
       run: |
         cd sdk
-        flutter test test/imp_reader_test.dart test/imp_kit_test.dart
+        flutter test test/imp_reader_test.dart test/imp_kit_test.dart --dart-define=run_test=true
 
     - name: Mark compatibility as passed
       if: success()
