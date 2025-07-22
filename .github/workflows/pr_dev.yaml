@@ -217,3 +217,31 @@ jobs:
         with:
           name: firmware-compatibility-matrix
           path: assets/firmware_compatibility.json
+
+  commit-compatibility-matrix:
+    name: Commit Compatibility Matrix
+    needs: generate-compatibility-matrix
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+
+      - name: Download compatibility matrix
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware-compatibility-matrix
+          path: assets/
+
+      - name: Configure git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "gh-actions@emdgroup.com"
+
+      - name: Commit and push compatibility matrix
+        run: |
+          git add assets/firmware_compatibility.json
+          git commit -m "chore: update firmware compatibility matrix [skip ci]"
+          git push origin HEAD:${{ github.head_ref }}
