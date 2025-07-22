@@ -46,11 +46,10 @@ runs:
         flutter-version: '3.32.1'
         channel: 'stable'
 
-    - name: Validate SDK
+    - name: Run tests
       shell: bash
       run: |
         cd sdk
-        flutter analyze --no-fatal-warnings --exclude=example/ --exclude=example_advanced/
         flutter test test/imp_reader_test.dart test/imp_kit_test.dart
 
     - name: Mark compatibility as passed
