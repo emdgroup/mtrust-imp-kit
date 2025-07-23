@@ -245,5 +245,11 @@ jobs:
           git fetch origin ${{ github.head_ref }}
           git reset --soft origin/${{ github.head_ref }}
           git add assets/firmware_compatibility.json
-          git commit -m "chore: update firmware compatibility matrix [skip ci]"
-          git push origin HEAD:${{ github.head_ref }}
+          
+          # Check if there are any changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to firmware compatibility matrix, skipping commit"
+          else
+            git commit -m "chore: update firmware compatibility matrix [skip ci]"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
