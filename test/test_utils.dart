@@ -1,8 +1,12 @@
 
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
 import 'package:mtrust_urp_virtual_strategy/mtrust_urp_virtual_strategy.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 final reader1 = FoundDevice(
   name: 'IMP-000123',
@@ -109,5 +113,71 @@ class MockStorageAdapter extends StorageAdapter {
   @override
   Future<void> persistPairedReader(FoundDevice reader) async {
     return Future.value();
+  }
+}
+
+/// Handles connecting to the reader via websockets
+class WifiStrategy extends ConnectionStrategy {
+  ConnectionStatus _status = ConnectionStatus.idle;
+
+  WebSocket? _socket;
+  @override
+  ConnectionStatus get status => _status;
+
+  @override
+  String get name => "WiFi";
+
+  void _setStatus(ConnectionStatus status) {
+    _status = status;
+    urpLogger.d("WS Service status: $status");
+    notifyListeners();
+  }
+
+  WebSocketChannel? _channel;
+
+  @override
+  output(Uint8List bytes) {
+    if (_channel == null) {
+      return;
+    }
+    _channel!.sink.add(bytes);
+  }
+
+  @override
+  Future<void> disconnectDevice() async {
+    _socket?.close();
+    _channel?.sink.close();
+    _channel = null;
+
+    _setStatus(ConnectionStatus.idle);
+    super.disconnectDevice();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    disconnectDevice();
+  }
+
+  @override
+  Future<bool> findAndConnectDevice(
+      {String? deviceAddress, Set<UrpDeviceType>? readerTypes}) async {
+    _socket = await WebSocket.connect('ws://$deviceAddress/ws');
+
+    _channel = IOWebSocketChannel(_socket!);
+    _channel!.stream.listen(
+        (data) => onData(Uint8List.fromList((data as String).codeUnits)));
+    _setStatus(ConnectionStatus.connected);
+    return true;
+  }
+
+  @override
+  Stream<FoundDevice> findDevices(Set<UrpDeviceType> readerTypes) {
+    return const Stream.empty();
+  }
+
+  @override
+  Future<StrategyAvailability> get availability {
+    return Future.value(StrategyAvailability.ready);
   }
 }

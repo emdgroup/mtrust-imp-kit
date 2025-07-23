@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mtrust_imp_kit/mtrust_imp_kit.dart';
-import 'package:mtrust_urp_wifi_strategy/mtrust_urp_wifi_strategy.dart';
+
+import 'test_utils.dart';
 
 void main() {
 
@@ -9,7 +10,7 @@ void main() {
   // NOTE: Run this test only if the device simulator is running
   // The firmware compatibility check is using this test to check compatibility
   if(runTest) {
-    final strategy = UrpWifiStrategy();
+    final strategy = WifiStrategy();
     final reader = ImpReader(connectionStrategy: strategy);
 
     group('Firmware Compatibility Check', () {

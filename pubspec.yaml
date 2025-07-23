@@ -25,11 +25,7 @@ dev_dependencies:
   golden_toolkit: ^0.15.0
   mockito: ^5.4.4
   mtrust_urp_virtual_strategy: ^9.1.0-9
-  mtrust_urp_wifi_strategy:
-    git:
-      url: https://github.com/emdgroup/mtrust-urp.git
-      ref: dev
-      path: mtrust_urp_wifi_strategy
+  web_socket_channel: ^2.4.0
 flutter:
   uses-material-design: true
   generate: true
