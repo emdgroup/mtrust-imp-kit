@@ -30,16 +30,22 @@ runs:
         for file in $(find all-results -name compat.json); do
           sdk=$(jq -r .sdk "$file")
           fw=$(jq -r .firmware "$file")
+          status=$(jq -r .status "$file")
 
           # Remove leading 'v' if present
           sdk=${sdk#v}
           fw=${fw#v}
 
-          echo "Processing test result: SDK=$sdk, Firmware=$fw"
+          echo "Processing test result: SDK=$sdk, Firmware=$fw, Status=$status"
 
-          # Add firmware version to SDK (override if SDK already exists)
-          tmp=$(mktemp)
-          jq --arg sdk "$sdk" --arg fw "$fw" '.[$sdk] += [$fw]' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
+          # Only add compatible firmware versions to the matrix
+          if [ "$status" = "compatible" ]; then
+            # Add firmware version to SDK (override if SDK already exists)
+            tmp=$(mktemp)
+            jq --arg sdk "$sdk" --arg fw "$fw" '.[$sdk] += [$fw]' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
+          else
+            echo "Skipping incompatible firmware $fw for SDK $sdk"
+          fi
         done
 
         # Convert lists to semver ranges and create final JSON structure
