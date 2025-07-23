@@ -154,7 +154,9 @@ jobs:
           
           # Validate JSON before output
           if echo "$matrix_combinations" | jq empty 2>/dev/null; then
-            echo "matrix=$matrix_combinations" >> $GITHUB_OUTPUT
+            # Use jq to compact the JSON for GitHub Actions output
+            compact_matrix=$(echo "$matrix_combinations" | jq -c .)
+            echo "matrix=$compact_matrix" >> $GITHUB_OUTPUT
             echo "Generated matrix with $count combinations (latest 3 firmware × current SDK version)"
             echo "Matrix preview:"
             echo "$matrix_combinations" | jq '.[0:3]' # Show first 3 combinations
