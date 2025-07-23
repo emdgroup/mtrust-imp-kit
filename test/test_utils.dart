@@ -166,7 +166,8 @@ class WifiStrategy extends ConnectionStrategy {
 
     _channel = IOWebSocketChannel(_socket!);
     _channel!.stream.listen(
-        (data) => onData(Uint8List.fromList((data as String).codeUnits)));
+      (data) => onData(data),
+    );
     _setStatus(ConnectionStatus.connected);
     return true;
   }
