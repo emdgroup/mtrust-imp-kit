@@ -1,0 +1,110 @@
+name: Fetch Firmware Versions
+description: Fetches firmware tags and filters to only include tags that have releases.
+inputs:
+  token:
+    description: GitHub token for API access
+    required: true
+outputs:
+  versions:
+    description: JSON array of firmware release tags
+    value: ${{ steps.set-output.outputs.versions }}
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch firmware tags with releases via REST
+      id: set-output
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        REPO=merckgroup/mtrust-fw-imp-2-0
+        
+        # Fetch all tags from the repository
+        echo "Fetching tags from $REPO..."
+        tags_response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/$REPO/tags?per_page=100")
+        
+        # Fetch releases to get list of tags that have releases
+        echo "Fetching releases to check which tags have releases..."
+        releases_response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/$REPO/releases?per_page=100")
+        
+        echo "Fetched tags and releases"
+        
+        # Check if tags response is valid JSON
+        if echo "$tags_response" | jq -e 'type == "array"' > /dev/null; then
+          echo "Valid tags JSON array received"
+          
+          # Extract all tag names
+          all_tags=$(echo "$tags_response" | jq -r '.[].name // empty')
+          
+          # Extract tag names that have releases
+          tags_with_releases=$(echo "$releases_response" | jq -r '.[].tag_name // empty')
+          
+          if [ -n "$all_tags" ]; then
+            echo "Found all tags:"
+            echo "$all_tags"
+            echo ""
+            
+            # Filter tags to only include those that have releases
+            if [ -n "$tags_with_releases" ]; then
+              echo "Tags with releases:"
+              echo "$tags_with_releases"
+              echo ""
+              
+              # Filter for major.minor.patch versions that have releases
+              # This regex matches versions like v1.0.0, v2.1.5, v2.9.17, etc.
+              firmware_tags=$(echo "$all_tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -Fxf <(echo "$tags_with_releases") || true)
+              
+              if [ -n "$firmware_tags" ]; then
+                # Group by major.minor version and select the latest fix version from each group
+                # Sort by version to ensure we get the latest fix versions first
+                sorted_tags=$(echo "$firmware_tags" | sort -V)
+                
+                # Extract unique major.minor versions and get the latest fix for each
+                latest_fixes=""
+                while IFS= read -r tag; do
+                  # Extract major.minor version (e.g., v2.9 from v2.9.17)
+                  major_minor=$(echo "$tag" | sed -E 's/^v([0-9]+\.[0-9]+)\.[0-9]+$/\1/')
+                  major_minor_with_v="v$major_minor"
+                  
+                  # Find the latest fix version for this major.minor
+                  latest_fix=$(echo "$sorted_tags" | grep "^$major_minor_with_v\." | tail -1)
+                  
+                  # Add to our list if not already present
+                  if [ -n "$latest_fix" ] && ! echo "$latest_fixes" | grep -q "$major_minor_with_v"; then
+                    latest_fixes="$latest_fixes$latest_fix"$'\n'
+                  fi
+                done <<< "$sorted_tags"
+                
+                # Take the 3 latest major.minor versions
+                latest_3_tags=$(echo "$latest_fixes" | sort -V | tail -3)
+                
+                echo "Found firmware tags with releases:"
+                echo "$firmware_tags"
+                echo ""
+                echo "Latest fix versions for each major.minor:"
+                echo "$latest_fixes"
+                echo ""
+                echo "Latest 3 firmware versions (latest fix from each major.minor):"
+                echo "$latest_3_tags"
+                
+                tags_json=$(echo "$latest_3_tags" | jq -R . | jq -s -c .)
+                echo "versions=$tags_json" >> $GITHUB_OUTPUT
+              else
+                echo "No firmware version tags with releases found"
+                echo "versions=[]" >> $GITHUB_OUTPUT
+              fi
+            else
+              echo "No tags with releases found"
+              echo "versions=[]" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No tags found in response"
+            echo "versions=[]" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "Invalid response or error from GitHub API"
+          echo "versions=[]" >> $GITHUB_OUTPUT
+        fi
+        

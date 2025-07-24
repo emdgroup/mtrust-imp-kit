@@ -9,6 +9,7 @@
     "buttonContinue": "Continue",
     "retry": "Retry",
     "connected": "Connected",
+    "disconnect": "Disconnect",
     "turnOnPrompt": "Press the button on the reader to turn it on",
     "timeHint": "Once started you will have 30s to read",
     "readyToScan": "Ready to read",
@@ -20,7 +21,9 @@
     "distanceHint": "Distance the reader 2-5mm from the p-Chip",
     "secondsLeft": "{seconds}s left",
     "searchingHint": "Make sure the LED \n on the reader is flashing blue.",
-    "incompatibleFirmware": "Firmware incompatible. Please update!",
+    "incompatibleFirmware": "Reader version incompatible",
+    "requiredFirmware": "This app requires a reader with a firmware version of",
+    "firmwareHint": "If you are the device owner, you can update the device firmware in the M-Trust console",
     "tokenFailed": "Failed to prepare for reading. Please make sure you have a working internet connection",
     "readingsLeft": "Readings left for current token:"
 }

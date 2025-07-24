@@ -106,18 +106,141 @@ jobs:
         with:
           directory: "."
 
+  matrix-generation:
+    name: Generate Compatibility Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fetch firmware versions
+        uses: ./.github/actions/fetch-firmware-versions
+        id: fetch-firmware-versions
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+
+      - name: Fetch SDK versions
+        uses: ./.github/actions/fetch-sdk-versions
+        id: fetch-sdk-versions
+
+      - name: Generate compatibility matrix
+        id: generate-matrix
+        run: |
+          # Parse the JSON arrays and create a matrix
+          firmware_versions=$(echo '${{ steps.fetch-firmware-versions.outputs.versions }}' | jq -r '.[]')
+          sdk_versions=$(echo '${{ steps.fetch-sdk-versions.outputs.versions }}' | jq -r '.[]')
+          
+          echo "Latest 3 major.minor firmware versions:"
+          echo "$firmware_versions"
+          echo ""
+          echo "Current SDK version:"
+          echo "$sdk_versions"
+          echo ""
+          
+          # Create matrix combinations using current SDK version with latest 3 firmware versions
+          matrix_combinations="[]"
+          count=0
+          
+          while IFS= read -r firmware; do
+            # For each firmware version, use the current SDK version
+            combination=$(jq -n --arg fw "$firmware" --arg sdk "$sdk_versions" '{firmware: $fw, sdk: $sdk}')
+            
+            # Add to matrix array
+            matrix_combinations=$(echo "$matrix_combinations" | jq --argjson combo "$combination" '. += [$combo]')
+            count=$((count + 1))
+          done <<< "$firmware_versions"
+          
+          # Validate JSON before output
+          if echo "$matrix_combinations" | jq empty 2>/dev/null; then
+            # Use jq to compact the JSON for GitHub Actions output
+            compact_matrix=$(echo "$matrix_combinations" | jq -c .)
+            echo "matrix=$compact_matrix" >> $GITHUB_OUTPUT
+            echo "Generated matrix with $count combinations (latest 3 firmware × current SDK version)"
+            echo "Matrix preview:"
+            echo "$matrix_combinations" | jq '.[0:3]' # Show first 3 combinations
+          else
+            echo "Error: Invalid JSON generated"
+            echo "Generated content:"
+            echo "$matrix_combinations"
+            exit 1
+          fi
+
+  compatibility-tests:
+    name: Compatibility Tests
+    needs: matrix-generation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.matrix-generation.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test compatibility
+        uses: ./.github/actions/test-compatibility
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+          firmware_version: ${{ matrix.firmware }}
+          sdk_version: ${{ matrix.sdk }}
+
+  generate-compatibility-matrix:
+    name: Generate Compatibility Matrix
+    needs: [version, compatibility-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate matrix
+        uses: ./.github/actions/generate-matrix
+
+      - name: Upload compatibility matrix artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-compatibility-matrix
+          path: assets/firmware_compatibility.json
+
+  release:
+    name: Release Package
+    needs: [version, generate-compatibility-matrix]
+    runs-on: macos-latest
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+
+      - name: Download compatibility matrix
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware-compatibility-matrix
+          path: assets/
+
+      - name: 📇 Configure git
+        run: |
+          git fetch --prune --unshallow
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "gh-actions@merckgroup.com"
+        shell: bash
+
       #  We first commit with proper message and add an empty commit to keep the files history clean
       - name: Update repo versions
         run: |
           git add . 
-          git commit -m "chore(release): ${{ steps.get_new_version.outputs.result }}"
-          git commit --allow-empty -m "chore(release): ${{ steps.get_new_version.outputs.result }} [skip ci]"
+          git commit -m "chore(release): ${{ needs.version.outputs.version }}"
+          git commit --allow-empty -m "chore(release): ${{ needs.version.outputs.version }} [skip ci]"
           git push origin dev
 
       #  For this part it is important to not push a commit with [skip ci] before the tag release
       - name: Push tag for pub.dev
         run: |
-          git commit --allow-empty -m "chore(release): ${{ steps.get_new_version.outputs.result }}"
-          git tag -a v${{ steps.get_new_version.outputs.result }} -m "Pub.dev version ${{ steps.get_new_version.outputs.result }}"
-          git push origin v${{ steps.get_new_version.outputs.result }}
-          git push origin dev
+          git commit --allow-empty -m "chore(release): ${{ needs.version.outputs.version }}"
+          git tag -a v${{ needs.version.outputs.version }} -m "Pub.dev version ${{ needs.version.outputs.version }}"
+          git push origin v${{ needs.version.outputs.version }}

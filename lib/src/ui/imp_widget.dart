@@ -53,6 +53,17 @@ class ImpWidget extends StatelessWidget {
               final reader = ImpReader(
                 connectionStrategy: connectionStrategy,
               );
+
+              final info = await reader.info();
+              final compatible = await reader.compatibilityCheck(info.fwVersion);
+              final requiredFirmware = await reader.requiredFirmwareRange();
+              if(!compatible) {
+                throw ImpReaderException(
+                  type: ImpReaderExceptionType.incompatibleFirmware,
+                  message: 'Required version: $requiredFirmware',
+                );
+              }
+
               if(tokenAmount != null) {
                 reader.setTokenAmount(tokenAmount!);
               }
@@ -63,10 +74,42 @@ class ImpWidget extends StatelessWidget {
             builder: (context, controller, stateType) {
               if (stateType == LdSubmitStateType.error) {
                 String message = controller.state.error?.message ?? 'Unknown error';
-                if(controller.state.error?.exception.runtimeType == ImpReaderException) {
+                if(controller.state.error?.exception is ImpReaderException) {
                   final ImpReaderException error = controller.state.error?.exception as ImpReaderException;
                   if(error.type == ImpReaderExceptionType.tokenFailed) {
                     message = ImpLocalizations.of(context).tokenFailed;
+                  }
+                  if(error.type == ImpReaderExceptionType.incompatibleFirmware) {
+                    final fwRange = message.split('Required version: ').last;
+                    return LdAutoSpace(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        LdTextHs(
+                          ImpLocalizations.of(context).incompatibleFirmware,
+                          textAlign: TextAlign.center,
+                        ),
+                        ldSpacerL,
+                        LdTextP(
+                          '${ImpLocalizations.of(context).requiredFirmware} $fwRange',
+                          textAlign: TextAlign.center,
+                        ),
+                        ldSpacerS,
+                        LdMute(
+                          child: LdTextP(
+                            ImpLocalizations.of(context).firmwareHint,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        ldSpacerL,
+                        LdButtonWarning(
+                          onPressed: connectionStrategy.disconnectDevice,
+                          context: context,
+                          child: Text(
+                            ImpLocalizations.of(context).disconnect,
+                          ),
+                        ),
+                      ],
+                    );
                   }
                 }
                 if(controller.state.error?.exception.runtimeType == ApiException) {

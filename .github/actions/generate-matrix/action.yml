@@ -1,0 +1,60 @@
+name: Generate Compatibility Matrix
+description: Converts test result artifacts into a firmware-SDK compatibility matrix.
+runs:
+  using: "composite"
+  steps:
+    - name: Download all compatibility artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-results
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+
+    - name: Generate SDK to firmware compatibility map
+      shell: bash
+      run: |
+        mkdir -p assets
+        tmpfile=$(mktemp)
+
+        # Initialize with empty structure
+        echo '{}' > $tmpfile
+
+        # Read package version from pubspec.yaml
+        package_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+
+        # Extract and group firmware versions per SDK from new test results
+        for file in $(find all-results -name compat.json); do
+          sdk=$(jq -r .sdk "$file")
+          fw=$(jq -r .firmware "$file")
+          status=$(jq -r .status "$file")
+
+          # Remove leading 'v' if present
+          sdk=${sdk#v}
+          fw=${fw#v}
+
+          echo "Processing test result: SDK=$sdk, Firmware=$fw, Status=$status"
+
+          # Only add compatible firmware versions to the matrix
+          if [ "$status" = "compatible" ]; then
+            # Add firmware version to SDK (override if SDK already exists)
+            tmp=$(mktemp)
+            jq --arg sdk "$sdk" --arg fw "$fw" '.[$sdk] += [$fw]' "$tmpfile" > "$tmp" && mv "$tmp" "$tmpfile"
+          else
+            echo "Skipping incompatible firmware $fw for SDK $sdk"
+          fi
+        done
+
+        # Convert lists to semver ranges and create final JSON structure
+        jq --arg version "$package_version" '{package_version: $version, compatibility: (to_entries | map({key: .key, value: (.value | sort_by(split(".") | map(tonumber)) | if length == 1 then "\(.[0]) - \(.[0])" else "\(.[0]) - \(.[-1])" end)}) | from_entries)}' "$tmpfile" > assets/firmware_compatibility.json
+
+        echo "Generated compatibility matrix with current test results"
+
+    - name: Upload full matrix
+      uses: actions/upload-artifact@v4
+      with:
+        name: compatibility-matrix
+        path: assets/firmware_compatibility.json

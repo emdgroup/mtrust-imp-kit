@@ -118,3 +118,138 @@ jobs:
         uses: emdgroup/mtrust-urp/.github/shared_actions/check-dart-licenses@dev
         with:
           directory: .
+
+  matrix-generation:
+    name: Generate Compatibility Matrix
+    needs: validate_pr
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fetch firmware versions
+        uses: ./.github/actions/fetch-firmware-versions
+        id: fetch-firmware-versions
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+
+      - name: Fetch SDK versions
+        uses: ./.github/actions/fetch-sdk-versions
+        id: fetch-sdk-versions
+
+      - name: Generate compatibility matrix
+        id: generate-matrix
+        run: |
+          # Parse the JSON arrays and create a matrix
+          firmware_versions=$(echo '${{ steps.fetch-firmware-versions.outputs.versions }}' | jq -r '.[]')
+          sdk_versions=$(echo '${{ steps.fetch-sdk-versions.outputs.versions }}' | jq -r '.[]')
+          
+          echo "Latest 3 major.minor firmware versions:"
+          echo "$firmware_versions"
+          echo ""
+          echo "Current SDK version:"
+          echo "$sdk_versions"
+          echo ""
+          
+          # Create matrix combinations using current SDK version with latest 3 firmware versions
+          matrix_combinations="[]"
+          count=0
+          
+          while IFS= read -r firmware; do
+            # For each firmware version, use the current SDK version
+            combination=$(jq -n --arg fw "$firmware" --arg sdk "$sdk_versions" '{firmware: $fw, sdk: $sdk}')
+            
+            # Add to matrix array
+            matrix_combinations=$(echo "$matrix_combinations" | jq --argjson combo "$combination" '. += [$combo]')
+            count=$((count + 1))
+          done <<< "$firmware_versions"
+          
+          # Validate JSON before output
+          if echo "$matrix_combinations" | jq empty 2>/dev/null; then
+            # Use jq to compact the JSON for GitHub Actions output
+            compact_matrix=$(echo "$matrix_combinations" | jq -c .)
+            echo "matrix=$compact_matrix" >> $GITHUB_OUTPUT
+            echo "Generated matrix with $count combinations (latest 3 firmware × current SDK version)"
+            echo "Matrix preview:"
+            echo "$matrix_combinations" | jq '.[0:3]' # Show first 3 combinations
+          else
+            echo "Error: Invalid JSON generated"
+            echo "Generated content:"
+            echo "$matrix_combinations"
+            exit 1
+          fi
+
+  compatibility-tests:
+    name: Compatibility Tests
+    needs: matrix-generation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.matrix-generation.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test compatibility
+        uses: ./.github/actions/test-compatibility
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+          firmware_version: ${{ matrix.firmware }}
+          sdk_version: ${{ matrix.sdk }}
+
+  generate-compatibility-matrix:
+    name: Generate Compatibility Matrix
+    needs: [build_library, compatibility-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate matrix
+        uses: ./.github/actions/generate-matrix
+
+      - name: Upload compatibility matrix artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-compatibility-matrix
+          path: assets/firmware_compatibility.json
+
+  commit-compatibility-matrix:
+    name: Commit Compatibility Matrix
+    needs: generate-compatibility-matrix
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.ELEVATED_TOKEN}}
+
+      - name: Download compatibility matrix
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware-compatibility-matrix
+          path: assets/
+
+      - name: Configure git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "gh-actions@emdgroup.com"
+
+      - name: Commit and push compatibility matrix
+        run: |
+          git fetch origin ${{ github.head_ref }}
+          git reset --soft origin/${{ github.head_ref }}
+          git add assets/firmware_compatibility.json
+          
+          # Check if there are any changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to firmware compatibility matrix, skipping commit"
+          else
+            git commit -m "chore: update firmware compatibility matrix [skip ci]"
+            git push origin HEAD:${{ github.head_ref }}
+          fi

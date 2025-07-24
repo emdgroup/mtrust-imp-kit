@@ -1,0 +1,26 @@
+name: Fetch SDK Versions
+description: Gets the current SDK version from pubspec.yaml.
+outputs:
+  versions:
+    description: JSON array containing only the current SDK version
+    value: ${{ steps.set-output.outputs.versions }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get current SDK version from pubspec.yaml
+      id: set-output
+      shell: bash
+      run: |
+        # Read the current version from pubspec.yaml
+        current_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+        
+        if [ -n "$current_version" ]; then
+          echo "Current SDK version from pubspec.yaml: $current_version"
+          
+          # Create JSON array with only the current version
+          versions_json=$(echo "[\"v$current_version\"]" | jq -c .)
+          echo "versions=$versions_json" >> $GITHUB_OUTPUT
+        else
+          echo "Error: Could not read version from pubspec.yaml"
+          echo "versions=[]" >> $GITHUB_OUTPUT
+        fi
