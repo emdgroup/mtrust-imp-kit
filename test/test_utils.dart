@@ -33,7 +33,7 @@ class CompleterStrategy {
       if(payload.coreCommand.command == UrpCommand.urpGetInfo) {
         return UrpResponse(
           payload: UrpDeviceInfo(
-            fwVersion: '2.9.17',
+            fwVersion: '2.9.18',
           ).writeToBuffer(),
         );
       }

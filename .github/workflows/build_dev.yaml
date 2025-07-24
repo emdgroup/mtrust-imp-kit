@@ -108,6 +108,7 @@ jobs:
 
   matrix-generation:
     name: Generate Compatibility Matrix
+    needs: version
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
@@ -121,16 +122,12 @@ jobs:
         with:
           token: ${{secrets.ELEVATED_TOKEN}}
 
-      - name: Fetch SDK versions
-        uses: ./.github/actions/fetch-sdk-versions
-        id: fetch-sdk-versions
-
       - name: Generate compatibility matrix
         id: generate-matrix
         run: |
           # Parse the JSON arrays and create a matrix
           firmware_versions=$(echo '${{ steps.fetch-firmware-versions.outputs.versions }}' | jq -r '.[]')
-          sdk_versions=$(echo '${{ steps.fetch-sdk-versions.outputs.versions }}' | jq -r '.[]')
+          sdk_versions='${{ needs.version.outputs.version }}'
           
           echo "Latest 3 major.minor firmware versions:"
           echo "$firmware_versions"
