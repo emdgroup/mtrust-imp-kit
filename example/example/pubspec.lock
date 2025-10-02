@@ -392,18 +392,18 @@ packages:
     dependency: "direct main"
     description:
       name: mtrust_urp_ble_strategy
-      sha256: "510ac23741ee3e34234989a9704a4e579dce4e5ba58330bc1deafbe73145e325"
+      sha256: e2c71e86d7b181b2aa14b1dfc7cfc5e59e1fe98c74188f2e5f961388de47b1ec
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.0-9"
+    version: "9.1.0-12"
   mtrust_urp_core:
     dependency: transitive
     description:
       name: mtrust_urp_core
-      sha256: "225745795a036ded39ec83eb1d88c53ff3f3d37afd6446a9bdf495f90637b7d3"
+      sha256: f2d499a6774b0f23431a5e5e1b3713a00eca7d284505b2a956921ff0c86ce8d8
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.0-9"
+    version: "9.1.0-12"
   mtrust_urp_types:
     dependency: transitive
     description:
@@ -416,10 +416,10 @@ packages:
     dependency: transitive
     description:
       name: mtrust_urp_ui
-      sha256: ae8e8826dfd84a71662dcb560c3865609893e9ec237430f5c12e9f17ea097f93
+      sha256: "066ff4ab77e04687de547dd771fffa56458f37a39c4cb6e18dc039bce01092cd"
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.0-9"
+    version: "9.1.0-12"
   multi_split_view:
     dependency: transitive
     description:
@@ -524,6 +524,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      sha256: "5bfcf68ca79ef689f8990d1160781b4bad40a3bd5e5218ad4076ddb7f4081585"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   responsive_builder:
     dependency: transitive
     description:
