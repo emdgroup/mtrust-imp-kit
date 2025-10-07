@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
@@ -28,7 +27,7 @@ void main() {
                 storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
-                onIdentificationFailed: () async {},
+                onIdentificationFailed: (_) async {},
               ),
             ),
           );
@@ -49,7 +48,7 @@ void main() {
                 storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
-                onIdentificationFailed: () async {},
+                onIdentificationFailed: (_) async {},
               ),
             ),
           );
@@ -75,7 +74,7 @@ void main() {
                 storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
-                onIdentificationFailed: () async {},
+                onIdentificationFailed: (_) async {},
               ),
             ),
           );
@@ -107,7 +106,7 @@ void main() {
                 storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
-                onIdentificationFailed: () async {},
+                onIdentificationFailed: (_) async {},
               ),
             ),
           );
@@ -143,7 +142,7 @@ void main() {
                 storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
-                onIdentificationFailed: () async {},
+                onIdentificationFailed: (_) async {},
               ),
             ),
           );
@@ -179,7 +178,7 @@ void main() {
                 storageAdapter: storageAdapter,
                 chipIdFormat: ChipIdFormat.hex,
                 onIdentificationDone: (_) async {},
-                onIdentificationFailed: () async {},
+                onIdentificationFailed: (_) async {},
               ),
             ),
           );

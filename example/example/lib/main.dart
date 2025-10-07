@@ -22,9 +22,10 @@ class MainApp extends StatelessWidget {
 
   // Will be called if a identifcation failed. Add the logic here to control
   // what should happen after a failed identification.
-  void onIdentificationFailed() {
+  // The exception parameter contains details about the failure.
+  void onIdentificationFailed(ImpReaderException exception) {
     // ignore: avoid_print
-    print("Measurement failed.");
+    print("Measurement failed: ${exception.message}");
   }
 
   @override
@@ -55,7 +56,9 @@ class MainApp extends StatelessWidget {
                   onIdentificationDone: (content) {
                     onIdentificationDone(content);
                   },
-                  onIdentificationFailed: () {},
+                  onIdentificationFailed: (exception) {
+                    onIdentificationFailed(exception);
+                  },
                   builder: (BuildContext context, Function openSheet) {
                     return Center(
                       child: Column(

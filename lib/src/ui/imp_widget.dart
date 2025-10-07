@@ -31,7 +31,8 @@ class ImpWidget extends StatelessWidget {
   final void Function(UrpImpSecureMeasurement measurement) onIdentificationDone;
 
   /// Will be called if a verification failed.
-  final void Function() onIdentificationFailed;
+  /// The [exception] parameter contains details about the failure.
+  final void Function(ImpReaderException exception) onIdentificationFailed;
 
   /// The payload to send to the reader.
   final String? payload;
@@ -55,16 +56,17 @@ class ImpWidget extends StatelessWidget {
               );
 
               final info = await reader.info();
-              final compatible = await reader.compatibilityCheck(info.fwVersion);
+              final compatible =
+                  await reader.compatibilityCheck(info.fwVersion);
               final requiredFirmware = await reader.requiredFirmwareRange();
-              if(!compatible) {
+              if (!compatible) {
                 throw ImpReaderException(
                   type: ImpReaderExceptionType.incompatibleFirmware,
                   message: 'Required version: $requiredFirmware',
                 );
               }
 
-              if(tokenAmount != null) {
+              if (tokenAmount != null) {
                 reader.setTokenAmount(tokenAmount!);
               }
               return await reader.prime(payload);
@@ -73,13 +75,16 @@ class ImpWidget extends StatelessWidget {
           builder: LdSubmitCustomBuilder<UrpImpPrimeResponse?>(
             builder: (context, controller, stateType) {
               if (stateType == LdSubmitStateType.error) {
-                String message = controller.state.error?.message ?? 'Unknown error';
-                if(controller.state.error?.exception is ImpReaderException) {
-                  final ImpReaderException error = controller.state.error?.exception as ImpReaderException;
-                  if(error.type == ImpReaderExceptionType.tokenFailed) {
+                String message =
+                    controller.state.error?.message ?? 'Unknown error';
+                if (controller.state.error?.exception is ImpReaderException) {
+                  final ImpReaderException error =
+                      controller.state.error?.exception as ImpReaderException;
+                  if (error.type == ImpReaderExceptionType.tokenFailed) {
                     message = ImpLocalizations.of(context).tokenFailed;
                   }
-                  if(error.type == ImpReaderExceptionType.incompatibleFirmware) {
+                  if (error.type ==
+                      ImpReaderExceptionType.incompatibleFirmware) {
                     final fwRange = message.split('Required version: ').last;
                     return LdAutoSpace(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,7 +117,8 @@ class ImpWidget extends StatelessWidget {
                     );
                   }
                 }
-                if(controller.state.error?.exception.runtimeType == ApiException) {
+                if (controller.state.error?.exception.runtimeType ==
+                    ApiException) {
                   message = ImpLocalizations.of(context).tokenFailed;
                 }
                 return LdAutoSpace(
@@ -166,9 +172,9 @@ class ImpWidget extends StatelessWidget {
                   controller.reset();
                   onIdentificationDone(measurement);
                 },
-                onVerificationFailed: () {
+                onVerificationFailed: (exception) {
                   controller.reset();
-                  onIdentificationFailed();
+                  onIdentificationFailed(exception);
                 },
               );
             },
@@ -193,7 +199,7 @@ class _ScanningView extends StatelessWidget {
   final int? remainingScans;
   final ConnectionStrategy strategy;
   final void Function(UrpImpSecureMeasurement measurement) onIdentificationDone;
-  final void Function() onVerificationFailed;
+  final void Function(ImpReaderException exception) onVerificationFailed;
 
   String _getFormattedAddress(UrpImpSecureMeasurement? measurement) {
     if (measurement == null || chipIdFormat == null) {
@@ -225,127 +231,141 @@ class _ScanningView extends StatelessWidget {
         builder: LdSubmitCustomBuilder<UrpImpSecureMeasurement>(
           builder: (context, measurementController, measurementStateType) {
             switch (measurementStateType) {
-              case (LdSubmitStateType.loading): {
-                return LdAutoSpace(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  animate: true,
-                  children: [
-                    LdTextHs(
-                      ImpLocalizations.of(context).scanning,
-                      textAlign: TextAlign.center,
-                    ),
-                    LdTextP(
-                      ImpLocalizations.of(context).distanceHint,
-                      textAlign: TextAlign.center,
-                    ),
-                    LdTextP(ImpLocalizations.of(context).holdTriggerHint),
-                    ldSpacerL,
-                    const Expanded(
-                      child: ScanningInstruction(),
-                    ),
-                    ldSpacerL,
-                    const CountDownProgress(),
-                    ldSpacerL,
-                  ],
-                );
-              }
-              case (LdSubmitStateType.result): {
-                return LdAutoSpace(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  animate: true,
-                  children: [
-                    LdTextHs(
-                      ImpLocalizations.of(context).successfullyRead,
-                      textAlign: TextAlign.center,
-                    ),
-                    LdTextP(
-                      _getFormattedAddress(
-                        measurementController.state.result,
+              case (LdSubmitStateType.loading):
+                {
+                  return LdAutoSpace(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    animate: true,
+                    children: [
+                      LdTextHs(
+                        ImpLocalizations.of(context).scanning,
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    const LdIndicator(
-                      type: LdIndicatorType.success,
-                      size: LdSize.l,
-                    ),
-                    ldSpacerL,
-                    LdButton(
-                      onPressed: () => onIdentificationDone(
-                        measurementController.state.result!,
+                      LdTextP(
+                        ImpLocalizations.of(context).distanceHint,
+                        textAlign: TextAlign.center,
                       ),
-                      child: Text(
-                        ImpLocalizations.of(context).done,
+                      LdTextP(ImpLocalizations.of(context).holdTriggerHint),
+                      ldSpacerL,
+                      const Expanded(
+                        child: ScanningInstruction(),
                       ),
-                    ),
-                  ],
-                );
-              }
-              case (LdSubmitStateType.idle): {
-                return LdAutoSpace(
-                  animate: true,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    LdTextHs(
-                      ImpLocalizations.of(context).readyToScan,
-                      textAlign: TextAlign.center,
-                    ),
-                    ldSpacerL,
-                    LdTextP(
-                      "${ImpLocalizations.of(context).readingsLeft} ${remainingScans ?? 'Unknown'}",
-                      textAlign: TextAlign.center,
-                    ),
-                    LdTextP(
-                      ImpLocalizations.of(context).timeHint,
-                      textAlign: TextAlign.center,
-                    ),
-                    const Expanded(
-                      child: IMPReaderVisualization(
-                        ledColor: Colors.yellow,
-                      ),
-                    ),
-                    LdButton(
-                      onPressed: measurementController.trigger,
-                      child: Text(
-                        ImpLocalizations.of(context).startScan,
-                      ),
-                    ),
-                  ],
-                ).padL();
-              }
-              case (LdSubmitStateType.error): {
-                String message = ImpLocalizations.of(context).readingFailedMessage;
-                if(measurementController.state.error?.exception.runtimeType == ImpReaderException) {
-                  final ImpReaderException error = measurementController.state.error?.exception as ImpReaderException;
-                  if(error.type == ImpReaderExceptionType.incompatibleFirmware) {
-                    message = ImpLocalizations.of(context).incompatibleFirmware;
-                  }
+                      ldSpacerL,
+                      const CountDownProgress(),
+                      ldSpacerL,
+                    ],
+                  );
                 }
-                return LdAutoSpace(
-                  animate: true,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    LdTextHs(
-                      ImpLocalizations.of(context).readingFailed,
-                      textAlign: TextAlign.center,
-                    ),
-                    LdTextP(
-                      message,
-                      textAlign: TextAlign.center,
-                    ),
-                    const Expanded(
-                      child: IMPReaderVisualization(
-                        ledColor: Colors.red,
+              case (LdSubmitStateType.result):
+                {
+                  return LdAutoSpace(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    animate: true,
+                    children: [
+                      LdTextHs(
+                        ImpLocalizations.of(context).successfullyRead,
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    LdButtonWarning(
-                      onPressed: onVerificationFailed,
-                      context: context,
-                      child: Text(
-                        ImpLocalizations.of(context).done,
+                      LdTextP(
+                        _getFormattedAddress(
+                          measurementController.state.result,
+                        ),
                       ),
-                    ),
-                  ],
-                ).padL();
-              }
+                      const LdIndicator(
+                        type: LdIndicatorType.success,
+                        size: LdSize.l,
+                      ),
+                      ldSpacerL,
+                      LdButton(
+                        onPressed: () => onIdentificationDone(
+                          measurementController.state.result!,
+                        ),
+                        child: Text(
+                          ImpLocalizations.of(context).done,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              case (LdSubmitStateType.idle):
+                {
+                  return LdAutoSpace(
+                    animate: true,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      LdTextHs(
+                        ImpLocalizations.of(context).readyToScan,
+                        textAlign: TextAlign.center,
+                      ),
+                      ldSpacerL,
+                      LdTextP(
+                        "${ImpLocalizations.of(context).readingsLeft} ${remainingScans ?? 'Unknown'}",
+                        textAlign: TextAlign.center,
+                      ),
+                      LdTextP(
+                        ImpLocalizations.of(context).timeHint,
+                        textAlign: TextAlign.center,
+                      ),
+                      const Expanded(
+                        child: IMPReaderVisualization(
+                          ledColor: Colors.yellow,
+                        ),
+                      ),
+                      LdButton(
+                        onPressed: measurementController.trigger,
+                        child: Text(
+                          ImpLocalizations.of(context).startScan,
+                        ),
+                      ),
+                    ],
+                  ).padL();
+                }
+              case (LdSubmitStateType.error):
+                {
+                  String message =
+                      ImpLocalizations.of(context).readingFailedMessage;
+                  ImpReaderException exception = ImpReaderException(
+                    type: ImpReaderExceptionType.measurementFailed,
+                    message: message,
+                  );
+                  if (measurementController
+                          .state.error?.exception.runtimeType ==
+                      ImpReaderException) {
+                    exception = measurementController.state.error?.exception
+                        as ImpReaderException;
+                    if (exception.type ==
+                        ImpReaderExceptionType.incompatibleFirmware) {
+                      message =
+                          ImpLocalizations.of(context).incompatibleFirmware;
+                    }
+                  }
+                  return LdAutoSpace(
+                    animate: true,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      LdTextHs(
+                        ImpLocalizations.of(context).readingFailed,
+                        textAlign: TextAlign.center,
+                      ),
+                      LdTextP(
+                        message,
+                        textAlign: TextAlign.center,
+                      ),
+                      const Expanded(
+                        child: IMPReaderVisualization(
+                          ledColor: Colors.red,
+                        ),
+                      ),
+                      LdButtonWarning(
+                        onPressed: () => onVerificationFailed(exception),
+                        context: context,
+                        child: Text(
+                          ImpLocalizations.of(context).done,
+                        ),
+                      ),
+                    ],
+                  ).padL();
+                }
             }
           },
         ),

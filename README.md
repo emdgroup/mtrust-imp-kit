@@ -95,10 +95,13 @@ To display the IMP Modal, utilize the `ImpModalBuilder` widget. It requires a co
   ImpModalBuilder(
     strategy: _connectionStrategy,
     payload: // Payload,
-    onVerificationDone: (measurement) {},
-    onVerificationFailed: () {},
+    onIdentificationDone: (measurement) {},
+    onIdentificationFailed: (exception) {
+      // Handle the failure with access to the ImpReaderException
+      print('Identification failed: ${exception.message}');
+    },
     onDismiss: () {}, // Optionally
-    canDismiss: true, // Define wether the user can dismiss the modal
+    canDismiss: true, // Define whether the user can dismiss the modal
     builder: (context, openModal) {
       // Call openModal to open the IMP Sheet
     }
