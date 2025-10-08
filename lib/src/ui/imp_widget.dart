@@ -320,7 +320,10 @@ class _ScanningView extends StatelessWidget {
                       ),
                       LdMute(
                         child: LdTextPs(
-                          "${ImpLocalizations.of(context).readingsLeft} ${remainingScans ?? 0}",
+                          ImpLocalizations.of(context).readingsLeft(
+                            remainingScans?.toString() ??
+                                ImpLocalizations.of(context).unknown,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),

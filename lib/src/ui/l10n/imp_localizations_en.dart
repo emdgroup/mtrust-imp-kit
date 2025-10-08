@@ -90,5 +90,10 @@ class ImpLocalizationsEn extends ImpLocalizations {
       'Failed to prepare for reading. Please make sure you have a working internet connection';
 
   @override
-  String get readingsLeft => 'Readings left for current token:';
+  String readingsLeft(Object count) {
+    return 'Readings left for current token: $count';
+  }
+
+  @override
+  String get unknown => 'Unknown';
 }
