@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:liquid_flutter/liquid_flutter.dart';
 import 'package:mtrust_imp_kit/src/format_utils.dart';
 import 'package:mtrust_imp_kit/src/imp_reader.dart';
+import 'package:mtrust_imp_kit/src/imp_reader_exception.dart';
 import 'package:mtrust_imp_kit/src/ui/imp_result.dart';
 import 'package:mtrust_imp_kit/src/ui/imp_widget.dart';
 import 'package:mtrust_urp_core/mtrust_urp_core.dart';
@@ -13,7 +14,8 @@ import 'package:mtrust_urp_types/imp.pb.dart';
 /// Shows a sheet that guides the user through the securalic workflow.
 /// pass the [ConnectionStrategy] to the sheet.
 /// The [onIdentificationDone] will be called if the verification was successful.
-/// The [onIdentificationFailed] will be called if the verification failed.
+/// The [onIdentificationFailed] will be called if the verification failed,
+/// with an [ImpReaderException] parameter containing details about the failure.
 /// Provide a [builder] that renders some UI with a callback to open the sheet.
 class ImpModalBuilder extends StatelessWidget {
   /// Creates a new instance of [ImpModalBuilder]
@@ -55,7 +57,8 @@ class ImpModalBuilder extends StatelessWidget {
   final void Function(UrpImpSecureMeasurement measurement) onIdentificationDone;
 
   /// Will be called if a verification failed.
-  final void Function() onIdentificationFailed;
+  /// The [exception] parameter contains details about the failure.
+  final void Function(ImpReaderException exception) onIdentificationFailed;
 
   /// The builder that opens the sheet.
   final Widget Function(BuildContext context, Function openSheet) builder;
@@ -71,20 +74,20 @@ class ImpModalBuilder extends StatelessWidget {
     var insets = EdgeInsets.zero;
     final screenRadius = LdTheme.of(context).screenRadius;
 
-    if(screenRadius != 0) {
+    if (screenRadius != 0) {
       topRadius = screenRadius - 1;
       bottomRadius = screenRadius - 1;
-      if(!kIsWeb && Platform.isIOS) {
+      if (!kIsWeb && Platform.isIOS) {
         useSafeArea = false;
         insets = const EdgeInsets.all(1);
       }
     }
 
     Future<void> handleClose() async {
-      if(turnOffOnClose && strategy.status == ConnectionStatus.connected) {
+      if (turnOffOnClose && strategy.status == ConnectionStatus.connected) {
         await ImpReader(connectionStrategy: strategy).off();
       }
-      if(disconnectOnClose) {
+      if (disconnectOnClose) {
         await strategy.disconnectDevice();
       }
     }
@@ -93,16 +96,16 @@ class ImpModalBuilder extends StatelessWidget {
       builder: (context, openModal) {
         return builder(context, () async {
           final result = await openModal();
-          if(result is ImpResultFailed) {
-            onIdentificationFailed();
-          } else if(result is ImpResultSuccess) {
+          if (result is ImpResultFailed) {
+            onIdentificationFailed(result.exception);
+          } else if (result is ImpResultSuccess) {
             onIdentificationDone(result.measurement);
           } else {
             onDismiss?.call();
           }
           await handleClose();
         });
-      }, 
+      },
       modal: impModal(
         canDismiss: canDismiss,
         insets: insets,
@@ -130,7 +133,12 @@ class ImpResultSuccess extends ImpResult {
 class ImpResultDismissed extends ImpResult {}
 
 /// Returned in case of a failed IMP identification (e.g. timeout)
-class ImpResultFailed extends ImpResult {}
+class ImpResultFailed extends ImpResult {
+  ///Creates a new instance of [ImpResultFailed]
+  ImpResultFailed(this.exception);
+
+  final ImpReaderException exception;
+}
 
 LdModal impModal({
   /// Whether the modal can be dismissed by the user
@@ -173,13 +181,13 @@ LdModal impModal({
     modalContent: (context) => AspectRatio(
       aspectRatio: 1,
       child: ImpWidget(
-        connectionStrategy: strategy, 
+        connectionStrategy: strategy,
         onIdentificationDone: (UrpImpSecureMeasurement measurement) async {
           Navigator.of(context).pop(ImpResultSuccess(measurement));
-        }, 
-        onIdentificationFailed: () async {
-          Navigator.of(context).pop(ImpResultFailed());
-        }, 
+        },
+        onIdentificationFailed: (ImpReaderException exception) async {
+          Navigator.of(context).pop(ImpResultFailed(exception));
+        },
         chipIdFormat: chipFormat,
         payload: payload,
         tokenAmount: tokenAmount,
