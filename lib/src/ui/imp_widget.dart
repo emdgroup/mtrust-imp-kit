@@ -55,16 +55,17 @@ class ImpWidget extends StatelessWidget {
                 connectionStrategy: connectionStrategy,
               );
 
-              final info = await reader.info();
-              final compatible =
-                  await reader.compatibilityCheck(info.fwVersion);
-              final requiredFirmware = await reader.requiredFirmwareRange();
-              if (!compatible) {
-                throw ImpReaderException(
-                  type: ImpReaderExceptionType.incompatibleFirmware,
-                  message: 'Required version: $requiredFirmware',
-                );
-              }
+              // TODO: Add back in then firmware compatibility check feature is working as expected
+              // final info = await reader.info();
+              // final compatible =
+              //     await reader.compatibilityCheck(info.fwVersion);
+              // final requiredFirmware = await reader.requiredFirmwareRange();
+              // if (!compatible) {
+              //   throw ImpReaderException(
+              //     type: ImpReaderExceptionType.incompatibleFirmware,
+              //     message: 'Required version: $requiredFirmware',
+              //   );
+              // }
 
               if (tokenAmount != null) {
                 reader.setTokenAmount(tokenAmount!);
