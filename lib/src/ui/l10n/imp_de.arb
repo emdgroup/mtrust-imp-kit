@@ -25,6 +25,6 @@
     "requiredFirmware": "Diese App benötigt einen Reader mit einer Firmware Version von",
     "firmwareHint": "Wenn Sie der Besitzer des Readers sind, können Sie die Firmware in the M-Trust Konsole aktualisieren",
     "tokenFailed": "Die Vorbereitung für den Lesevorgang ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine funktionierende Internetverbindung haben.",
-    "readingsLeft": "Verbleibende Messungen für aktuellen Token: {count}",
+    "readingsLeft": "Internetverbindung in {count} Messungen notwendig",
     "unknown": "Unbekannt"
 }

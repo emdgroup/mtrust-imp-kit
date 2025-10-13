@@ -91,7 +91,7 @@ class ImpLocalizationsEn extends ImpLocalizations {
 
   @override
   String readingsLeft(Object count) {
-    return 'Readings left for current token: $count';
+    return 'Internet connection required in $count measurements';
   }
 
   @override

@@ -25,6 +25,6 @@
     "requiredFirmware": "This app requires a reader with a firmware version of",
     "firmwareHint": "If you are the device owner, you can update the device firmware in the M-Trust console",
     "tokenFailed": "Failed to prepare for reading. Please make sure you have a working internet connection",
-    "readingsLeft": "Readings left for current token: {count}",
+    "readingsLeft": "Internet connection required in {count} measurements",
     "unknown": "Unknown"
 }
