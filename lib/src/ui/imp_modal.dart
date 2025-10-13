@@ -197,6 +197,6 @@ LdModal impModal({
           tokenAmount: tokenAmount,
         ),
       ),
-    ),
+    ).padL(),
   );
 }
