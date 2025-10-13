@@ -75,6 +75,18 @@ jobs:
       - name: Print new version
         run: echo ${{ steps.get_new_version.outputs.result}}
 
+      # Bump the pubspec.yaml file
+      - name: ⬆️ Bump pubspec.yaml
+        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec@dev
+        with:
+          version: ${{ needs.version.outputs.version }}
+          directory: .
+
+      - name: 📝 Update version in readme
+        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec-readme-version@dev
+        with:
+          directory: .
+
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
