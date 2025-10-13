@@ -178,20 +178,25 @@ LdModal impModal({
     useSafeArea: useSafeArea,
     insets: insets,
     size: LdSize.s,
+    contentPadding: EdgeInsets.zero,
+    fixedDialogSize: const Size(400, 400),
     modalContent: (context) => AspectRatio(
       aspectRatio: 1,
-      child: ImpWidget(
-        connectionStrategy: strategy,
-        onIdentificationDone: (UrpImpSecureMeasurement measurement) async {
-          Navigator.of(context).pop(ImpResultSuccess(measurement));
-        },
-        onIdentificationFailed: (ImpReaderException exception) async {
-          Navigator.of(context).pop(ImpResultFailed(exception));
-        },
-        chipIdFormat: chipFormat,
-        payload: payload,
-        tokenAmount: tokenAmount,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: ImpWidget(
+          connectionStrategy: strategy,
+          onIdentificationDone: (UrpImpSecureMeasurement measurement) async {
+            Navigator.of(context).pop(ImpResultSuccess(measurement));
+          },
+          onIdentificationFailed: (ImpReaderException exception) async {
+            Navigator.of(context).pop(ImpResultFailed(exception));
+          },
+          chipIdFormat: chipFormat,
+          payload: payload,
+          tokenAmount: tokenAmount,
+        ),
       ),
-    ).padL(),
+    ),
   );
 }

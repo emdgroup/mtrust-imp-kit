@@ -251,8 +251,14 @@ abstract class ImpLocalizations {
   /// No description provided for @readingsLeft.
   ///
   /// In en, this message translates to:
-  /// **'Readings left for current token:'**
-  String get readingsLeft;
+  /// **'Internet connection required in {count} measurements'**
+  String readingsLeft(Object count);
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
 }
 
 class _ImpLocalizationsDelegate
