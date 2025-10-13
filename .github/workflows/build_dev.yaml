@@ -19,7 +19,7 @@ jobs:
         id: check
         run: |
           LAST_COMMITTER=$(git log -1 --pretty=format:'%an')
-  
+
           if [[ "$LAST_COMMITTER" == "GitHub Actions" ]]; then
             echo "Last commit was made by GitHub Actions. Exiting..."
             echo "::set-output name=success::false"
@@ -29,7 +29,7 @@ jobs:
           fi
 
   version:
-    name: Version & Build    
+    name: Version & Build
     needs: commit-check
     if: needs.commit-check.outputs.success == 'true'
     runs-on: macos-latest
@@ -87,6 +87,17 @@ jobs:
         with:
           directory: .
 
+      # Create artifact with versioned files
+      - name: 📦 Create versioned files artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: versioned-files
+          path: |
+            package.json
+            pubspec.yaml
+            README.md
+          retention-days: 1
+
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
@@ -128,18 +139,18 @@ jobs:
           # Parse the JSON arrays and create a matrix
           firmware_versions=$(echo '${{ steps.fetch-firmware-versions.outputs.versions }}' | jq -r '.[]')
           sdk_versions='${{ needs.version.outputs.version }}'
-          
+
           echo "Latest 3 major.minor firmware versions:"
           echo "$firmware_versions"
           echo ""
           echo "Current SDK version:"
           echo "$sdk_versions"
           echo ""
-          
+
           # Create matrix combinations using current SDK version with latest 3 firmware versions
           matrix_combinations="[]"
           count=0
-          
+
           while IFS= read -r firmware; do
             # For each firmware version, use the current SDK version
             combination=$(jq -n --arg fw "$firmware" --arg sdk "$sdk_versions" '{firmware: $fw, sdk: $sdk}')
@@ -148,7 +159,7 @@ jobs:
             matrix_combinations=$(echo "$matrix_combinations" | jq --argjson combo "$combination" '. += [$combo]')
             count=$((count + 1))
           done <<< "$firmware_versions"
-          
+
           # Validate JSON before output
           if echo "$matrix_combinations" | jq empty 2>/dev/null; then
             # Use jq to compact the JSON for GitHub Actions output
@@ -220,17 +231,12 @@ jobs:
           name: firmware-compatibility-matrix
           path: assets/
 
-      # Bump the pubspec.yaml file
-      - name: ⬆️ Bump pubspec.yaml
-        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec@dev
+      # Restore versioned files from artifact
+      - name: 📦 Restore versioned files
+        uses: actions/download-artifact@v4
         with:
-          version: ${{ needs.version.outputs.version }}
-          directory: .
-
-      - name: 📝 Update version in readme
-        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec-readme-version@dev
-        with:
-          directory: .
+          name: versioned-files
+          path: .
 
       - name: 📇 Configure git
         run: |

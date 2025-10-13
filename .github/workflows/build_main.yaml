@@ -19,7 +19,7 @@ jobs:
         id: check
         run: |
           LAST_COMMITTER=$(git log -1 --pretty=format:'%an')
-  
+
           if [[ "$LAST_COMMITTER" == "GitHub Actions" ]]; then
             echo "Last commit was made by GitHub Actions. Exiting..."
             echo "::set-output name=success::false"
@@ -87,6 +87,17 @@ jobs:
         with:
           directory: .
 
+      # Create artifact with versioned files
+      - name: 📦 Create versioned files artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: versioned-files
+          path: |
+            package.json
+            pubspec.yaml
+            README.md
+          retention-days: 1
+
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
@@ -105,6 +116,13 @@ jobs:
         uses: emdgroup/mtrust-urp/.github/shared_actions/check-dart-licenses@main
         with:
           directory: "."
+
+      # Restore versioned files from artifact
+      - name: 📦 Restore versioned files
+        uses: actions/download-artifact@v4
+        with:
+          name: versioned-files
+          path: .
 
       #  We first commit with proper message and add an empty commit to keep the files history clean
       - name: Update repo versions
