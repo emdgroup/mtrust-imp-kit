@@ -79,7 +79,7 @@ jobs:
       - name: ⬆️ Bump pubspec.yaml
         uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec@dev
         with:
-          version: ${{ steps.get_new_version.outputs.result }}
+          version: ${{ steps.get_new_version.outputs.result}}
           directory: .
 
       - name: 📝 Update version in readme
@@ -219,6 +219,18 @@ jobs:
         with:
           name: firmware-compatibility-matrix
           path: assets/
+
+      # Bump the pubspec.yaml file
+      - name: ⬆️ Bump pubspec.yaml
+        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec@dev
+        with:
+          version: ${{ needs.version.outputs.version }}
+          directory: .
+
+      - name: 📝 Update version in readme
+        uses: emdgroup/mtrust-urp/.github/shared_actions/update-pubspec-readme-version@dev
+        with:
+          directory: .
 
       - name: 📇 Configure git
         run: |
