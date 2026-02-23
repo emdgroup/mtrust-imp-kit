@@ -104,6 +104,11 @@ class ImpReader extends CmdWrapper {
     );
   }
 
+  @override
+  Future<UrpResponse> addCoreCmdToQueue(UrpCoreCommand command) {
+    return _addCommandToQueue(coreCommand: command);
+  }
+
   Future<Map<String, dynamic>> _loadFirmwareCompatibility() async {
     final jsonStr =
         await rootBundle.loadString('assets/firmware_compatibility.json');
@@ -205,15 +210,6 @@ class ImpReader extends CmdWrapper {
       throw ImpReaderException(message: 'Failed to get name');
     }
     return UrpDeviceName.fromBuffer(res.payload);
-  }
-
-  /// Pair the device.
-  @override
-  Future<void> pair() async {
-    final cmd = UrpCoreCommand(
-      command: UrpCommand.urpPair,
-    );
-    await _addCommandToQueue(coreCommand: cmd);
   }
 
   /// Unpair the device.
