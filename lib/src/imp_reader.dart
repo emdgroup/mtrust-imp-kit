@@ -12,7 +12,7 @@ class ImpReader extends CmdWrapper {
     required this.connectionStrategy,
     UrpDeviceIdentifier? target,
     UrpDeviceIdentifier? origin,
-  }) : target = target ??
+  })  : target = target ??
             UrpDeviceIdentifier(
               deviceClass: UrpDeviceClass.urpReader,
               deviceType: UrpDeviceType.urpImp,
@@ -24,7 +24,7 @@ class ImpReader extends CmdWrapper {
                   ? UrpDeviceType.urpMobile
                   : UrpDeviceType.urpDesktop,
             );
-  
+
   /// The connectionStrategy used to connect the device.
   final ConnectionStrategy connectionStrategy;
 
@@ -89,7 +89,7 @@ class ImpReader extends CmdWrapper {
   }
 
   Future<UrpResponse> _addCommandToQueue({
-    UrpCoreCommand? coreCommand, 
+    UrpCoreCommand? coreCommand,
     UrpImpDeviceCommand? deviceCommand,
     Duration? timeout,
   }) async {
@@ -97,15 +97,21 @@ class ImpReader extends CmdWrapper {
       UrpImpCommandWrapper(
         coreCommand: coreCommand,
         deviceCommand: deviceCommand,
-      ).writeToBuffer(), 
-      target, 
+      ).writeToBuffer(),
+      target,
       origin,
       timeout: timeout,
     );
   }
 
+  @override
+  Future<UrpResponse> addCoreCmdToQueue(UrpCoreCommand command) {
+    return _addCommandToQueue(coreCommand: command);
+  }
+
   Future<Map<String, dynamic>> _loadFirmwareCompatibility() async {
-    final jsonStr = await rootBundle.loadString('assets/firmware_compatibility.json');
+    final jsonStr =
+        await rootBundle.loadString('assets/firmware_compatibility.json');
     return jsonDecode(jsonStr) as Map<String, dynamic>;
   }
 
@@ -114,20 +120,21 @@ class ImpReader extends CmdWrapper {
     final map = await _loadFirmwareCompatibility();
     final sdkVersion = map['package_version'] as String;
     final compat = map['compatibility'] as Map<String, dynamic>;
-    final compatibilityMap = compat.map((key, value) => MapEntry(key, value.toString()));
+    final compatibilityMap =
+        compat.map((key, value) => MapEntry(key, value.toString()));
     return compatibilityMap[sdkVersion];
   }
 
   /// Checks wether the current SDK is compatible with the firmware installed on the device
   Future<bool> compatibilityCheck(String firmwareVersion) async {
     final fwRange = await requiredFirmwareRange();
-    if(fwRange == null) {
+    if (fwRange == null) {
       return false;
     }
     // NOTE: It's important to split at ' - ' including the spaces as versions can have an appending
     // as described in Semantic Versioning Specification (e.g. 1.0.0-alpha)
     final parts = fwRange.split(' - ').map((s) => s.trim()).toList();
-    if(parts.length != 2) {
+    if (parts.length != 2) {
       return false;
     }
 
@@ -143,7 +150,7 @@ class ImpReader extends CmdWrapper {
     );
     return constraint.allows(currentFw);
   }
-   
+
   /// Pings the device.
   @override
   Future<void> ping() async {
@@ -175,7 +182,7 @@ class ImpReader extends CmdWrapper {
     );
     final res = await _addCommandToQueue(coreCommand: cmd);
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(message: 'Failed to get power state');
     }
     return UrpPowerState.fromBuffer(res.payload);
@@ -199,19 +206,10 @@ class ImpReader extends CmdWrapper {
     );
     final res = await _addCommandToQueue(coreCommand: cmd);
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(message: 'Failed to get name');
     }
     return UrpDeviceName.fromBuffer(res.payload);
-  }
-
-  /// Pair the device.
-  @override
-  Future<void> pair() async {
-    final cmd = UrpCoreCommand(
-      command: UrpCommand.urpPair,
-    );
-    await _addCommandToQueue(coreCommand: cmd);
   }
 
   /// Unpair the device.
@@ -285,7 +283,7 @@ class ImpReader extends CmdWrapper {
     );
     final res = await _addCommandToQueue(coreCommand: cmd);
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(message: 'Failed to get public key');
     }
     return UrpPublicKey.fromBuffer(res.payload);
@@ -299,7 +297,7 @@ class ImpReader extends CmdWrapper {
     );
     final res = await _addCommandToQueue(coreCommand: cmd);
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(message: 'Failed to get public key');
     }
     return UrpDeviceId.fromBuffer(res.payload);
@@ -323,12 +321,12 @@ class ImpReader extends CmdWrapper {
     );
     final res = await _addCommandToQueue(coreCommand: cmd);
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(message: 'Failed to connect to AP');
     }
     return UrpWifiState.fromBuffer(res.payload);
   }
-  
+
   /// Disconnect AP.
   @override
   Future<void> disconnectAP() async {
@@ -337,7 +335,7 @@ class ImpReader extends CmdWrapper {
     );
     await _addCommandToQueue(coreCommand: cmd);
   }
-  
+
   /// Start AP. Throws an error if failed.
   @override
   Future<UrpWifiState> startAP(String ssid, String apk) async {
@@ -347,12 +345,12 @@ class ImpReader extends CmdWrapper {
     );
     final res = await _addCommandToQueue(coreCommand: cmd);
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(message: 'Failed to start AP');
     }
     return UrpWifiState.fromBuffer(res.payload);
   }
-  
+
   /// Stop AP.
   @override
   Future<void> stopAP() async {
@@ -372,8 +370,8 @@ class ImpReader extends CmdWrapper {
       final res = await _addCommandToQueue(deviceCommand: cmd);
       return UrpImpPrimeResponse.fromBuffer(res.payload);
     } catch (e) {
-      if(e is DeviceError) {
-        if(e.errorCode == 4) {
+      if (e is DeviceError) {
+        if (e.errorCode == UrpErrorCode.urpLeaseError) {
           final publicKey = await getPublicKey();
           final oldToken = await requestToken();
           try {
@@ -395,15 +393,13 @@ class ImpReader extends CmdWrapper {
   Future<UrpSecureToken> requestToken() async {
     final UrpImpDeviceCommand cmd = UrpImpDeviceCommand(
       command: UrpImpCommand.urpImpRequestToken,
-      tokenRequest: UrpTokenRequest(
-        amount: _requestTokenAmount
-      ),
+      tokenRequest: UrpTokenRequest(amount: _requestTokenAmount),
     );
     final res = await _addCommandToQueue(
       deviceCommand: cmd,
     );
-    
-    if(!res.hasPayload()) {
+
+    if (!res.hasPayload()) {
       throw ImpReaderException(
         message: 'Failed to request token!',
         type: ImpReaderExceptionType.tokenFailed,
@@ -430,7 +426,7 @@ class ImpReader extends CmdWrapper {
       deviceCommand: cmd,
     );
 
-    if(!res.hasPayload()) {
+    if (!res.hasPayload()) {
       throw ImpReaderException(
         message: 'Failed to get current token',
         type: ImpReaderExceptionType.tokenFailed,
@@ -454,7 +450,7 @@ class ImpReader extends CmdWrapper {
       command: UrpImpCommand.urpImpStartMeasurement,
     );
     final res = await _addCommandToQueue(
-      deviceCommand: cmd, 
+      deviceCommand: cmd,
       timeout: const Duration(seconds: 30),
     );
 

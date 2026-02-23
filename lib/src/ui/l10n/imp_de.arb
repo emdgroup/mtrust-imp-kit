@@ -2,7 +2,9 @@
     "@@locale": "de",
     "successfullyRead": "Lesevorgang erfolgreich",
     "readingFailed": "Lesevorgang fehlgeschlagen",
+    "primeFailed": "Die Vorbereitung für den Lesevorgang ist fehlgeschlagen",
     "readingFailedMessage": "Kein p-Chip erkannt.",
+    "holdTriggerHint": "Halten Sie die Taste gedrückt, um den p-Chip zu lesen",
     "done": "Fertig",
     "buttonContinue": "Weiter",
     "retry": "Wiederholen",
@@ -16,11 +18,13 @@
     "connecting": "Verbinden...",
     "searching": "Suchen...",
     "scanning": "Lesen...",
-    "secondsLeft": "{seconds}s\nverbleibend",
+    "distanceHint": "Halten Sie den Reader 2-5mm vom p-Chip entfernt",
+    "secondsLeft": "{seconds}s verbleibend",
     "searchingHint": "Stellen Sie sicher, dass die LED \n am Reader blau blinkt.",
     "incompatibleFirmware": "Reader Firmware inkompatibel",
     "requiredFirmware": "Diese App benötigt einen Reader mit einer Firmware Version von",
     "firmwareHint": "Wenn Sie der Besitzer des Readers sind, können Sie die Firmware in the M-Trust Konsole aktualisieren",
     "tokenFailed": "Die Vorbereitung für den Lesevorgang ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine funktionierende Internetverbindung haben.",
-    "readingsLeft": "Verbleibende Messungen für aktuellen Token:"
+    "readingsLeft": "Internetverbindung in {count} Messungen notwendig",
+    "unknown": "Unbekannt"
 }

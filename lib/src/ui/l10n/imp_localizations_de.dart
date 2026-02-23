@@ -15,13 +15,15 @@ class ImpLocalizationsDe extends ImpLocalizations {
   String get readingFailed => 'Lesevorgang fehlgeschlagen';
 
   @override
-  String get primeFailed => 'Failed to prepare for reading';
+  String get primeFailed =>
+      'Die Vorbereitung für den Lesevorgang ist fehlgeschlagen';
 
   @override
   String get readingFailedMessage => 'Kein p-Chip erkannt.';
 
   @override
-  String get holdTriggerHint => 'Hold trigger button to read the p-Chip';
+  String get holdTriggerHint =>
+      'Halten Sie die Taste gedrückt, um den p-Chip zu lesen';
 
   @override
   String get done => 'Fertig';
@@ -64,11 +66,11 @@ class ImpLocalizationsDe extends ImpLocalizations {
   String get scanning => 'Lesen...';
 
   @override
-  String get distanceHint => 'Distance the reader 2-5mm from the p-Chip';
+  String get distanceHint => 'Halten Sie den Reader 2-5mm vom p-Chip entfernt';
 
   @override
   String secondsLeft(Object seconds) {
-    return '${seconds}s\nverbleibend';
+    return '${seconds}s verbleibend';
   }
 
   @override
@@ -91,5 +93,10 @@ class ImpLocalizationsDe extends ImpLocalizations {
       'Die Vorbereitung für den Lesevorgang ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine funktionierende Internetverbindung haben.';
 
   @override
-  String get readingsLeft => 'Verbleibende Messungen für aktuellen Token:';
+  String readingsLeft(Object count) {
+    return 'Internetverbindung in $count Messungen notwendig';
+  }
+
+  @override
+  String get unknown => 'Unbekannt';
 }

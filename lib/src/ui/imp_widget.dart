@@ -251,7 +251,12 @@ class _ScanningView extends StatelessWidget {
                         ImpLocalizations.of(context).distanceHint,
                         textAlign: TextAlign.center,
                       ),
-                      LdTextP(ImpLocalizations.of(context).holdTriggerHint),
+                      LdMute(
+                        child: LdTextPs(
+                          ImpLocalizations.of(context).holdTriggerHint,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                       ldSpacerL,
                       const Expanded(
                         child: ScanningInstruction(),
@@ -276,13 +281,19 @@ class _ScanningView extends StatelessWidget {
                         _getFormattedAddress(
                           measurementController.state.result,
                         ),
-                      ),
-                      const LdIndicator(
-                        type: LdIndicatorType.success,
-                        size: LdSize.l,
+                        textAlign: TextAlign.center,
                       ),
                       ldSpacerL,
-                      LdButton(
+                      const Expanded(
+                        child: IMPReaderVisualization(
+                          ledColor: Colors.green,
+                        ),
+                      ),
+                      ldSpacerL,
+                      LdButtonVague(
+                        width: double.infinity,
+                        borderRadius: LdTheme.of(context).radius(LdSize.l),
+                        size: LdSize.l,
                         onPressed: () => onIdentificationDone(
                           measurementController.state.result!,
                         ),
@@ -303,11 +314,6 @@ class _ScanningView extends StatelessWidget {
                         ImpLocalizations.of(context).readyToScan,
                         textAlign: TextAlign.center,
                       ),
-                      ldSpacerL,
-                      LdTextP(
-                        "${ImpLocalizations.of(context).readingsLeft} ${remainingScans ?? 'Unknown'}",
-                        textAlign: TextAlign.center,
-                      ),
                       LdTextP(
                         ImpLocalizations.of(context).timeHint,
                         textAlign: TextAlign.center,
@@ -317,14 +323,26 @@ class _ScanningView extends StatelessWidget {
                           ledColor: Colors.yellow,
                         ),
                       ),
-                      LdButton(
+                      LdMute(
+                        child: LdTextPs(
+                          ImpLocalizations.of(context).readingsLeft(
+                            remainingScans?.toString() ??
+                                ImpLocalizations.of(context).unknown,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      LdButtonVague(
                         onPressed: measurementController.trigger,
+                        borderRadius: LdTheme.of(context).radius(LdSize.l),
+                        width: double.infinity,
+                        size: LdSize.l,
                         child: Text(
                           ImpLocalizations.of(context).startScan,
                         ),
                       ),
                     ],
-                  ).padL();
+                  );
                 }
               case (LdSubmitStateType.error):
                 {
@@ -363,6 +381,9 @@ class _ScanningView extends StatelessWidget {
                         ),
                       ),
                       LdButtonWarning(
+                        width: double.infinity,
+                        borderRadius: LdTheme.of(context).radius(LdSize.l),
+                        size: LdSize.l,
                         onPressed: () => onVerificationFailed(exception),
                         context: context,
                         child: Text(
@@ -370,7 +391,7 @@ class _ScanningView extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ).padL();
+                  );
                 }
             }
           },
