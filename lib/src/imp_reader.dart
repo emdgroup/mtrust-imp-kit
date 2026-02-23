@@ -371,7 +371,7 @@ class ImpReader extends CmdWrapper {
       return UrpImpPrimeResponse.fromBuffer(res.payload);
     } catch (e) {
       if (e is DeviceError) {
-        if (e.errorCode == 4) {
+        if (e.errorCode == UrpErrorCode.urpLeaseError) {
           final publicKey = await getPublicKey();
           final oldToken = await requestToken();
           try {
