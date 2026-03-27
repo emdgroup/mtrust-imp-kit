@@ -13,6 +13,7 @@ class ImpWidget extends StatelessWidget {
     required this.onIdentificationFailed,
     required this.chipIdFormat,
     this.storageAdapter,
+    this.readerConnectorMode = ReaderConnectorMode.preferLastConnected,
     this.payload,
     this.tokenAmount,
     super.key,
@@ -23,6 +24,9 @@ class ImpWidget extends StatelessWidget {
   /// The StorageAdapter to use for persisting the last connected and paired
   /// devices.
   final StorageAdapter? storageAdapter;
+
+  /// The mode to use when connecting to a device.
+  final ReaderConnectorMode readerConnectorMode;
 
   /// The strategy to use for the connection.
   final ConnectionStrategy connectionStrategy;
@@ -45,6 +49,7 @@ class ImpWidget extends StatelessWidget {
     return DeviceConnector(
       connectionStrategy: connectionStrategy,
       storageAdapter: storageAdapter,
+      mode: readerConnectorMode,
       connectedBuilder: (BuildContext context) {
         return LdSubmit<UrpImpPrimeResponse?>(
           config: LdSubmitConfig<UrpImpPrimeResponse?>(

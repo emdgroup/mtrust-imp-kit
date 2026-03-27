@@ -10,6 +10,7 @@ import 'package:mtrust_imp_kit/src/ui/imp_result.dart';
 import 'package:mtrust_imp_kit/src/ui/imp_widget.dart';
 import 'package:mtrust_urp_core/mtrust_urp_core.dart';
 import 'package:mtrust_urp_types/imp.pb.dart';
+import 'package:mtrust_urp_ui/mtrust_urp_ui.dart';
 
 /// Shows a sheet that guides the user through the securalic workflow.
 /// pass the [ConnectionStrategy] to the sheet.
@@ -31,6 +32,8 @@ class ImpModalBuilder extends StatelessWidget {
     this.turnOffOnClose = true,
     this.canDismiss = true,
     this.tokenAmount,
+    this.storageAdapter,
+    this.readerConnectorMode = ReaderConnectorMode.preferLastConnected,
     super.key,
   });
 
@@ -49,6 +52,13 @@ class ImpModalBuilder extends StatelessWidget {
   final ChipIdFormat? chipIdFormat;
 
   final String? payload;
+
+  /// The StorageAdapter to use for persisting the last connected and paired
+  /// devices.
+  final StorageAdapter? storageAdapter;
+
+  /// The mode to use when connecting to a device.
+  final ReaderConnectorMode readerConnectorMode;
 
   /// Strategy to use for the connection.
   final ConnectionStrategy strategy;
@@ -116,6 +126,8 @@ class ImpModalBuilder extends StatelessWidget {
         chipFormat: chipIdFormat,
         payload: payload,
         tokenAmount: tokenAmount,
+        storageAdapter: storageAdapter,
+        readerConnectorMode: readerConnectorMode,
       ),
     );
   }
@@ -167,6 +179,14 @@ LdModal impModal({
 
   /// Amount of token to be requested on token refresh
   int? tokenAmount,
+
+  /// The StorageAdapter to use for persisting the last connected and paired
+  /// devices.
+  StorageAdapter? storageAdapter,
+
+  /// The mode to use when connecting to a device.
+  ReaderConnectorMode readerConnectorMode =
+      ReaderConnectorMode.preferLastConnected,
 }) {
   return LdModal(
     disableScrolling: true,
@@ -195,6 +215,8 @@ LdModal impModal({
           chipIdFormat: chipFormat,
           payload: payload,
           tokenAmount: tokenAmount,
+          storageAdapter: storageAdapter,
+          readerConnectorMode: readerConnectorMode,
         ),
       ),
     ).padL(),
